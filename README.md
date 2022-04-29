@@ -31,9 +31,11 @@ Helpers for modsecurity Logs
 
  Then Run this script
 - Either like this:
+
  msg="Remote Command Execution: Unix Shell Expression Found" ./modsec_maininfo.sh
 
 - or like this:
+
  export msg="Remote Command Execution: Unix Shell Expression Found"
 
  ./modsec_maininfo.sh
