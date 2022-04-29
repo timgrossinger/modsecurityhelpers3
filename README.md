@@ -21,6 +21,11 @@ Helpers for modsecurity Logs
 
 ### INSTRUCTION ###
 
+ Clone Repository and add executable bit:
+ git clone https://github.com/stefanpinter/modsecurityhelpers.git
+ cd modsecurityhelpers
+ chmod +x modsec_maininfo.sh
+
  Run the following command in $logpath before this script, to show the messages of the rules that raised the anomaly score and their number of occurence:
  grep -rHlP "Total Score:\ \d+" | xargs -I{} grep -hP '^Message.*\[msg.+?\]' {} | grep -hPo '\[msg.+?\]' | sort | uniq -c | sort -h
 
