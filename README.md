@@ -4,7 +4,7 @@ Helpers for modsecurity Logs
  The story:
  - when modsecurity is set to "on" but with a high anomaly threshold in order to NOT intercept the request (kind of like audit mode) it does not actually write the anomaly score into the log file.
    rule 2001099 changes this
- - this change is needed for this script to work, as it greps for the added log content.
+ - this change is needed for the script modsec_maininfo.sh to work, as it greps for the added log content.
  - this script just gives information about a particular message like "Remote Command Execution: Unix Shell Expression Found"
 
  Requirements:
