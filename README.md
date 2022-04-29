@@ -30,9 +30,9 @@ Helpers for modsecurity Logs
  grep -rHlP "Total Score:\ \d+" | xargs -I{} grep -hP '^Message.*\[msg.+?\]' {} | grep -hPo '\[msg.+?\]' | sort | uniq -c | sort -h
 
  Then Run this script
- Either like this:
+- Either like this:
  msg="Remote Command Execution: Unix Shell Expression Found" ./modsec_maininfo.sh
 
- or like this:
+- or like this:
  export msg="Remote Command Execution: Unix Shell Expression Found"
  ./modsec_maininfo.sh
