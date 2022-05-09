@@ -48,3 +48,9 @@ It will present you
 - the PTR record of the IP of the http client (if there is one)
 - the id of the matchin rule
 - information about what matched
+
+### TODO ###
+
+  - make it work in "on"-Mode (should be easy)
+  - minimise the need for grepping through the whole logs multiple times (by writing the results to a temporary text file)
+  - add the possibility to search for IP-address as host header
