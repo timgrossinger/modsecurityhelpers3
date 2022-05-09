@@ -52,6 +52,6 @@ It will present you
 
 ### TODO ###
 
-  - make it work in "on"-Mode (should be easy)
+  - make it work in true "on"-Mode to allow the same functionality, when it indeed intercepted requests (should be easy)
   - minimise the need for grepping through the whole logs multiple times (by writing the results to a temporary text file)
   - add the possibility to search for IP-address as host header
