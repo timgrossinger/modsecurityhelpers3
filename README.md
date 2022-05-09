@@ -1,7 +1,7 @@
 # modsecurityhelpers
 Helpers for modsecurity Logs
 
-The helpers at the moment
+The helpers at the moment:
 - 1 additional rule that logs the anomaly score even when the request isn't intercepted
 - 1 script that greps and filters todays logs for relevant data.
 
