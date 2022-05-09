@@ -1,8 +1,9 @@
 # modsecurityhelpers
 Helpers for modsecurity Logs
+
 The helpers at the moment
 - 1 additional rule that logs the anomaly score even when the request isn't intercepted
-- a script that greps and filters todays logs for relevant data.
+- 1 script that greps and filters todays logs for relevant data.
 
 ### The story ### 
  - when modsecurity is set to "on" but with a high anomaly threshold in order to NOT intercept the request (kind of like audit mode) it does not actually write the anomaly score into the log file.
