@@ -1,8 +1,6 @@
 # modsecurityhelpers
 Helpers for modsecurity Logs
-
-### The story ###
- - when modsecurity is set to "on" but with a high anomaly threshold in order to NOT intercept the request (kind of like audit mode) it does not actually write the anomaly score into the log file.
+### The story ### - when modsecurity is set to "on" but with a high anomaly threshold in order to NOT intercept the request (kind of like audit mode) it does not actually write the anomaly score into the log file.
    rule 2001099 changes this
  - this change is needed for the script modsec_maininfo.sh to work, as it greps for the added log content.
  - this script just gives information about a particular message like "Remote Command Execution: Unix Shell Expression Found"
@@ -30,21 +28,18 @@ cd modsecurityhelpers
 chmod +x modsec_maininfo.sh
 ```
 
- Run the following command in $logpath before this script, to show the messages of the rules that raised the anomaly score and their number of occurence:
+Run this script
 ```
-grep -rHlP "Total Score:\ \d+" | xargs -I{} grep -hP '^Message.*\[msg.+?\]' {} | grep -hPo '\[msg.+?\]' | sort | uniq -c | sort -h
-```
-
- Then Run this script
-- Either like this:
-
-```
-msg="Remote Command Execution: Unix Shell Expression Found" ./modsec_maininfo.sh
-```
-
-- or like this:
-
-```
-export msg="Remote Command Execution: Unix Shell Expression Found"
  ./modsec_maininfo.sh
 ```
+
+It searches for the messages in the logs.
+The messages and their number of occurence is shown.
+Choose the message you want info about.
+
+It will present you 
+- the matching logfiles
+- information about the request header (for example GET /drupal/setup.php)
+- the PTR record of the IP of the http client (if there is one)
+- the id of the matchin rule
+- information about what matched
