@@ -7,7 +7,8 @@ The helpers at the moment:
 
 ### The story ### 
  - when modsecurity is set to "on" but with a high anomaly threshold in order to NOT intercept the request (kind of like audit mode) it does not actually write the anomaly score into the log file.
-   rule 2001099 changes this
+
+   Rule 2001099 changes this.
  - when in high-threshold-audit-mode: this change is needed for the script modsec_maininfo.sh to work, as it greps for the added log content.
  - it can be quite tricky to obtain relevant information from the modsecurity logs, the interactive script can help here
 
