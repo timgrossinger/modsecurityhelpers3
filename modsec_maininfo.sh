@@ -1,25 +1,26 @@
 #!/bin/bash
 shopt -s expand_aliases
 
-#is dialog installed?
+#Define Path where the logs are
+logpath=/var/log/modsec_audit/www-data/$(date +%Y%m%d)
+
+#test: is dialog installed?
 if ! which dialog > /dev/null; then
 	echo ERROR
 	echo Please install dialog with \"sudo apt install dialog\"
 	exit 1
 fi
 
-#Define Path where the logs are
-logpath=/var/log/modsec_audit/www-data/$(date +%Y%m%d)
-
-#Reads Hosts from the logs
+#Reads host entries from Request Header from the logs
 hosts=$(grep -rhE '^Host' ${logpath} | grep -vE [0-9] | sort | uniq | sed 's/.*\ //')
 
 #Adds numbers for usage with the tool dialog and removes newlines
 hostsn=$(echo "${hosts}" | nl -w1 | tr '\n' ' ')
 
-#Runs the tool dialog - choose host
-chosenhostn=$(dialog --menu --stdout 'Choose the host to filter for' 0 0 0 ${hostsn} 999 "IP-Adresse")
+#Runs the tool dialog - choose host header to grep for (or IP adress)
+chosenhostn=$(dialog --menu --stdout 'Choose the host to filter for' 0 0 0 ${hostsn} 999 "IP address")
 
+#set variable chosenhost to 1 number if IP address has been chosen
 if [ $chosenhostn = '999' ]; then
 	chosenhost='\d{1,3}'
 else
@@ -36,10 +37,11 @@ messagesn=$(echo "${messages}" | nl -w1 | tr '\n' ' ' | tr '\t' ' ')
 chosenmessagen=$(bash -c "dialog --menu --stdout \"Choose the message to filter for\" 0 0 0 ${messagesn[@]}")
 chosenmessage=$(echo "${messages}" | sed -n ${chosenmessagen}p | sed -re "s/\b([0-9]+)\b\s*(.*)/\2/")
 
+#make it look nicer
 clear
-
 echo -e "Findings about:\n${chosenhost}\n \e[31m$chosenmessage\e[0m \n\n"
 
+#set alias as it is used multiple times
 alias maincommand='grep -rHlP "^Host: $chosenhost" ${logpath} | xargs -I{} grep -rHlP "Total Score:\ \d+" {} | xargs -I{} grep -rlE "^Message.*$chosenmessage" {}'
 
 maincommand
