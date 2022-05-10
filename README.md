@@ -8,13 +8,16 @@ The helpers at the moment:
 ### The story ### 
  - when modsecurity is set to "on" but with a high anomaly threshold in order to NOT intercept the request (kind of like audit mode) it does not actually write the anomaly score into the log file.
    rule 2001099 changes this
- - this change is needed for the script modsec_maininfo.sh to work, as it greps for the added log content.
+ - when in high-threshold-audit-mode: this change is needed for the script modsec_maininfo.sh to work, as it greps for the added log content.
 
 
 ### Requirements ###
  - modsecurity 2.9.2
  - CoreRuleSet 3.3.2
- - Rule 2001099 that is run AFTER the rules of CoreRuleSet (defined in apache-mods/security2.conf)
+
+   tested with SecRuleEngine set to on with rule 2001099 and high threshold level
+   tested with SecRuleEngine set to on with intercepted requests (works without rule 2001099)
+ - if needed for high-threshold-audit-mode: Rule 2001099 that is run AFTER the rules of CoreRuleSet (defined in apache-mods/security2.conf)
  - SecAuditLogType should be set to "Concurrent" in /etc/modsecurity/modsecurity.conf
 
 ```
