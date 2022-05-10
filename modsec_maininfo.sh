@@ -1,6 +1,13 @@
 #!/bin/bash
 shopt -s expand_aliases
 
+#is dialog installed?
+if ! which dialog > /dev/null; then
+	echo ERROR
+	echo Please install dialog with \"sudo apt install dialog\"
+	exit 1
+fi
+
 #Define Path where the logs are
 logpath=/var/log/modsec_audit/www-data/$(date +%Y%m%d)
 
