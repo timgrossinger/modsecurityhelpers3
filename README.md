@@ -54,4 +54,6 @@ It will present you
 
   - make it work in true "on"-Mode to allow the same functionality, when it indeed intercepted requests (should be easy)
   - minimise the need for grepping through the whole logs multiple times (by writing the results to a temporary text file)
-  - add the possibility to search for IP-address as host header
+  - add the possibility to search for IP address as host header
+  - better usability to configure another log path
+
