@@ -18,6 +18,7 @@ The helpers at the moment:
  - SecAuditLogType should be set to Concurrent" (/etc/modsecurity/modsecurity.conf)
      SecAuditLogType Concurrent
      SecAuditLogStorageDir /var/log/modsec_audit
+ - dialog (sudo apt install dialog)
 
 ### Tested with modsecurity 2.9.2 ###
  - CoreRuleSet 3.3.2
@@ -56,4 +57,4 @@ It will present you
   - minimise the need for grepping through the whole logs multiple times (by writing the results to a temporary text file)
   - add the possibility to search for IP address as host header
   - better usability to configure another log path
-
+  - test if dialog is installed
