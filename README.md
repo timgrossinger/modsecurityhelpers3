@@ -15,9 +15,12 @@ The helpers at the moment:
  - modsecurity 2.9.2
  - CoreRuleSet 3.3.2
  - Rule 2001099 that is run AFTER the rules of CoreRuleSet (defined in apache-mods/security2.conf)
- - SecAuditLogType should be set to Concurrent" (/etc/modsecurity/modsecurity.conf)
+ - SecAuditLogType should be set to "Concurrent" in /etc/modsecurity/modsecurity.conf
+
      SecAuditLogType Concurrent
+
      SecAuditLogStorageDir /var/log/modsec_audit
+
  - dialog (sudo apt install dialog)
 
 ### Tested with modsecurity 2.9.2 ###
