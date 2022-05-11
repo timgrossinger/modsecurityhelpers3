@@ -61,6 +61,8 @@ It will present you
 - the id of the matchin rule
 - information about what matched
 
+if it quits unexpectedly it probably did not find logs of the chosen host where it (would have) intercepted
+
 ### TODO ###
 
   - minimise the need for grepping through the whole logs multiple times each run (by writing the results to a temporary text file)
