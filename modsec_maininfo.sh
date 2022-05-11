@@ -1,4 +1,5 @@
 #!/bin/bash
+#set -x
 shopt -s expand_aliases
 
 #Define Path where the logs are
@@ -12,7 +13,7 @@ if ! which dialog > /dev/null; then
 fi
 
 #Reads host entries from Request Header from the logs
-hosts=$(grep -rhE '^Host' ${logpath} | grep -vE [0-9] | sort | uniq | sed 's/.*\ //')
+hosts=$(grep -rHlP "Total Score:\ \d+" ${logpath} | xargs -I{} grep -rhE '^Host' {} | grep -vE [0-9] | sort | uniq | sed 's/.*\ //')
 
 #Adds numbers for usage with the tool dialog and removes newlines
 hostsn=$(echo "${hosts}" | nl -w1 | tr '\n' ' ')
