@@ -14,8 +14,8 @@ The helpers at the moment:
 
 
 ### Requirements ###
- - modsecurity 2.9.2
- - CoreRuleSet 3.3.2
+ - modsecurity v2
+ - CoreRuleSet
 
    tested with SecRuleEngine set to on with rule 2001099 and high threshold level
 
@@ -30,7 +30,8 @@ The helpers at the moment:
 
  - dialog (sudo apt install dialog)
 
-### Tested with modsecurity 2.9.2 ###
+### Tested with  ###
+ - modsecurity 2.9.2
  - CoreRuleSet 3.3.2
  - Ubuntu 20.04
  - Apache
