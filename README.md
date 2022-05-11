@@ -67,7 +67,7 @@ if it quits unexpectedly it probably did not find logs of the chosen host where 
 
 You have to change the variable "logpath". Example:
 ```
-logpath="/var/log/modsec_audit/www-data/ ./moi.sh"
+logpath="/var/log/modsec_audit/www-data/" ./moi.sh
 ```
 or
 ```
