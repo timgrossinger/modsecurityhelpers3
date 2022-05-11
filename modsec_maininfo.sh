@@ -19,7 +19,7 @@ hosts=$(grep -rHlP "Total Score:\ \d+" ${logpath} | xargs -I{} grep -rhE '^Host'
 hostsn=$(echo "${hosts}" | nl -w1 | tr '\n' ' ')
 
 #Runs the tool dialog - choose host header to grep for (or IP adress)
-chosenhostn=$(dialog --menu --stdout 'Choose the host to filter for' 0 0 0 ${hostsn} 999 "IP address" 2>/dev/null)
+chosenhostn=$(dialog --backtitle 'moi - a modsecurityhelpers tool' --menu --stdout 'Choose the host to filter for' 0 0 0 ${hostsn} 999 "IP address" 2>/dev/null)
 
 #set variable chosenhost to 1 number if IP address has been chosen
 if [ $chosenhostn = '999' ]; then
@@ -35,7 +35,7 @@ messages=`grep -rHlP "^Host: $chosenhost" ${logpath} | xargs -I{} grep -rHlP "To
 messagesn=$(echo "${messages}" | nl -w1 | tr '\n' ' ' | tr '\t' ' ')
 
 #Runs the tool dialog - choose message
-chosenmessagen=$(bash -c "dialog --menu --stdout \"Choose the message to filter for\" 0 0 0 ${messagesn[@]} 2>/dev/null")
+chosenmessagen=$(bash -c "dialog --backtitle 'moi - a modsecurityhelpers tool' --menu --stdout \"Choose the message to filter for\" 0 0 0 ${messagesn[@]} 2>/dev/null")
 chosenmessage=$(echo "${messages}" | sed -n ${chosenmessagen}p | sed -re "s/\b([0-9]+)\b\s*(.*)/\2/")
 
 if [[ -z "$chosenmessage" ]]; then
