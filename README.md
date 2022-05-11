@@ -63,6 +63,23 @@ It will present you
 
 if it quits unexpectedly it probably did not find logs of the chosen host where it (would have) intercepted
 
+### Change Time Frame ###
+
+You have to change the variable "logpath". Example:
+```
+logpath="/var/log/modsec_audit/www-data/ ./moi.sh"
+```
+or
+```
+export logpath="/var/log/modsec_audit/www-data/"
+./moi.sh
+```
+Don't forget to reset the logpath by either closing the active shell or
+```
+export logpath=
+```
+
+
 ### TODO ###
 
   - minimise the need for grepping through the whole logs multiple times each run (by writing the results to a temporary text file)
