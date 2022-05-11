@@ -1,5 +1,6 @@
 #!/bin/bash
 #set -x
+set -o pipefail
 shopt -s expand_aliases
 
 #Define Path where the logs are
