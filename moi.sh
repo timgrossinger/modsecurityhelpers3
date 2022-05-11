@@ -4,7 +4,9 @@ set -o pipefail
 shopt -s expand_aliases
 
 #Define Path where the logs are
+if [[ -z "$logpath" ]]; then
 logpath=/var/log/modsec_audit/www-data/$(date +%Y%m%d)
+fi
 
 #test: is dialog installed?
 if ! which dialog > /dev/null; then
