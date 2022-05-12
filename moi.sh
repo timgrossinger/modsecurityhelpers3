@@ -72,6 +72,6 @@ maincommand | xargs -I{} grep -A1 '\-A\-\-' {} | awk '{print $4}' | sort | uniq 
 echo -e "\n"
 maincommand | xargs -I{} grep -oE "^Message.*$chosenmessage.*" {} | grep -oE "id\ \"[0-9]{6}\"" | sort | uniq
 echo -e "\n"
-maincommand | xargs -I{} grep -oE "^Message.*$chosenmessage.*" {} | cut -d[ -f1 | sort | uniq
+maincommand | xargs -I{} grep -oE "^Message.*$chosenmessage.*" {} | sed -re 's/\[file.*$/\n\n/g' | sort | uniq | sed 's/$/\n/'
 
 exit 0
