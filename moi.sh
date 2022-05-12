@@ -15,7 +15,12 @@ if ! which dialog > /dev/null; then
 	exit 1
 fi
 
-echo 'Please wait.'
+if which figlet > /dev/null; then
+figlet moi
+else
+	echo "moi is loading. Please wait"
+fi
+
 #Reads host entries from Request Header from the logs
 hosts=$(grep -rHlP "Total Score:\ \d+" ${logpath} | xargs -I{} grep -rhE '^Host' {} | grep -vE [0-9] | sort | uniq | sed 's/.*\ //')
 
