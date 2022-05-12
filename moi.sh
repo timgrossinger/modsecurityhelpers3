@@ -17,6 +17,7 @@ fi
 
 if which figlet > /dev/null; then
 figlet moi
+echo -e "\n...is loading. Please wait"
 else
 	echo "moi is loading. Please wait"
 fi
