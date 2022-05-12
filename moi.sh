@@ -39,7 +39,7 @@ else
 fi
 
 #Reads messages & number of occurence
-messages=`grep -rHlP "^Host: $chosenhost" ${logpath} | xargs -I{} grep -rHlP "Total Score:\ \d+" {} | xargs -I{} grep -hP '^Message.*\[msg.+?\]' {} | grep -hPo '\[msg.+?\]' | sort | uniq -c | sed 's/^ *//' | sed -e 's/(/./g' | sed -e 's/)/./g' | sort -h | grep -v 'Inbound\ Anomaly' | sed -re 's/\b([0-9]+)\b.*\[msg\ \"(.*)\"\]$/\"\1 \2\"/'`
+messages=`grep -rHlP "^Host: $chosenhost" ${logpath} | xargs -I{} grep -rHlP "Total Score:\ \d+" {} | xargs -I{} grep -hP '^Message.*\[msg.+?\]' {} | grep -hPo '\[msg.+?\]' | sort | uniq -c | sed 's/^ *//' | sed -e 's/(/./g' | sed -e 's/)/./g' | sort -rh | grep -v 'Inbound\ Anomaly' | sed -re 's/\b([0-9]+)\b.*\[msg\ \"(.*)\"\]$/\"\1 \2\"/'`
 
 #Adds numbers for usage with the tool dialog and removes newlines/tabs
 messagesn=$(echo "${messages}" | nl -w1 | tr '\n' ' ' | tr '\t' ' ')
@@ -72,6 +72,6 @@ maincommand | xargs -I{} grep -A1 '\-A\-\-' {} | awk '{print $4}' | sort | uniq 
 echo -e "\n"
 maincommand | xargs -I{} grep -oE "^Message.*$chosenmessage.*" {} | grep -oE "id\ \"[0-9]{6}\"" | sort | uniq
 echo -e "\n"
-maincommand | xargs -I{} grep -oE "^Message.*$chosenmessage.*" {} | sed "s/^Message.*Matched\ Data:\ //" | cut -d[ -f1 | sort | uniq
+maincommand | xargs -I{} grep -oE "^Message.*$chosenmessage.*" {} | cut -d[ -f1 | sort | uniq
 
 exit 0
