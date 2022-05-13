@@ -83,5 +83,4 @@ export logpath=
 
 ### TODO ###
 
-  - minimise the need for grepping through the whole logs multiple times each run (by writing the results to a temporary text file)
   - bugfixes
