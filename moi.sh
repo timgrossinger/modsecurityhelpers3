@@ -55,14 +55,14 @@ chosenmessagen=$(bash -c "dialog --backtitle 'moi - a modsecurityhelpers tool' -
 chosenmessage=$(echo "${messages}" | sed -n ${chosenmessagen}p | sed -re "s/\b([0-9]+)\b\s*(.*)/\2/")
 
 if [[ -z "$chosenmessage" ]]; then
-	echo -e "Nichts gefunden!"
+	echo -e "Nothing found! Sorry!"
 	exit 0
 fi
 
 #clear screen and show summary
 clear
 if [ $chosenhostn = '999' ]; then
-        echo -e "Host: IP-Adresse\nMessage:\e[31m $chosenmessage\e[0m \n\n"
+        echo -e "Host: IP adress:\nMessage:\e[31m $chosenmessage\e[0m \n\n"
 else
         echo -e "Host: ${chosenhost}\nMessage:\e[31m $chosenmessage\e[0m \n\n"
 fi
