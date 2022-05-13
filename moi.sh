@@ -25,6 +25,9 @@ fi
 #Reads host entries from Request Header from the logs
 hosts=$(grep -rHlP "Total Score:\ \d+" ${logpath} | xargs -I{} grep -rhE '^Host' {} | grep -vE [0-9] | sort | uniq | sed 's/.*\ //')
 
+#Check if X-Real-IP Header is present (specific Webserver/Reverse Proxy configuration)
+let realip=$(find ${logpath} -type f | head | xargs -I{} grep -E '^X-Real-IP' {} | wc -l 2>/dev/null)
+
 #Adds numbers for usage with the tool dialog and removes newlines
 hostsn=$(echo "${hosts}" | nl -w1 | tr '\n' ' ')
 
@@ -68,7 +71,11 @@ maincommand
 echo -e "\n"
 maincommand | xargs -I{} grep -A1 '\-B\-\-' {} | grep -vE '^-' | sort | uniq
 echo -e "\n"
-maincommand | xargs -I{} grep -A1 '\-A\-\-' {} | awk '{print $4}' | sort | uniq | xargs -I{} host {}
+if [ ${realip} -gt 0 ]; then
+	maincommand | xargs -I{} grep -E '^X-Real-IP' {} | awk '{print $2}' | sort | uniq | xargs -I{} sh -c 'echo {}; host {}'
+else
+        maincommand | xargs -I{} grep -A1 '\-A\-\-' {} | awk '{print $4}' | sort | uniq | xargs -I{} sh -c 'echo {}; host {}'
+fi
 echo -e "\n"
 maincommand | xargs -I{} grep -oE "^Message.*$chosenmessage.*" {} | grep -oE "id\ \"[0-9]{6}\"" | sort | uniq
 echo -e "\n"
