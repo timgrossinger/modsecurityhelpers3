@@ -72,9 +72,9 @@ echo -e "\n"
 maincommand | xargs -I{} grep -A1 '\-B\-\-' {} | grep -vE '^-' | sort | uniq
 echo -e "\n"
 if [ ${realip} -gt 0 ]; then
-	maincommand | xargs -I{} grep -E '^X-Real-IP' {} | awk '{print $2}' | sort | uniq | xargs -I{} sh -c 'echo {}; host {}'
+	maincommand | xargs -I{} grep -E '^X-Real-IP' {} | awk '{print $2}' | sort | uniq | xargs -I{} sh -c 'echo -e "\e[31mIP address:\e[0m\n{}\n\e[31mPTR-Record:\e[0m" ; host {} ; echo -e ""'
 else
-        maincommand | xargs -I{} grep -A1 '\-A\-\-' {} | awk '{print $4}' | sort | uniq | xargs -I{} sh -c 'echo {}; host {}'
+        maincommand | xargs -I{} grep -A1 '\-A\-\-' {} | awk '{print $4}' | sort | uniq | xargs -I{} sh -c 'echo -e "\e[31mIP address\e[0m:\n{}\n\e[31mPTR-Record:\e[0m" ; host {} ; echo -e ""'
 fi
 echo -e "\n"
 maincommand | xargs -I{} grep -oE "^Message.*$chosenmessage.*" {} | grep -oE "id\ \"[0-9]{6}\"" | sort | uniq
