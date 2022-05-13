@@ -11,16 +11,18 @@ fi
 
 #test: is dialog installed?
 if ! which dialog > /dev/null; then
-	echo ERROR
+	echo --- ERROR ---
+	echo dialog not found
 	echo Please install dialog with \"sudo apt install dialog\"
+	echo --- ERROR ---
 	exit 1
 fi
 
 if which figlet > /dev/null; then
 figlet moi
-echo -e "\n...is loading. Please wait"
+echo -e "\n...is loading. Please wait!"
 else
-	echo "moi is loading. Please wait"
+	echo "moi is loading. Please wait!"
 fi
 
 #Reads host entries from Request Header from the logs
