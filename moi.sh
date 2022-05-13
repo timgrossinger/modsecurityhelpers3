@@ -1,7 +1,6 @@
 #!/bin/bash
 #set -x
 set -o pipefail
-shopt -s expand_aliases
 
 tmpfile="/tmp/moi.tmp"
 
