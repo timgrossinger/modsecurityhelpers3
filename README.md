@@ -33,7 +33,7 @@ The helpers at the moment:
 ### Tested with  ###
  - modsecurity 2.9.2
  - CoreRuleSet 3.3.2
- - Ubuntu 20.04
+ - Ubuntu 18.04/20.04
  - Apache
 
 
@@ -83,4 +83,5 @@ export logpath=
 
 ### TODO ###
 
+  - add the possibility to write the result to a textfile
   - bugfixes
