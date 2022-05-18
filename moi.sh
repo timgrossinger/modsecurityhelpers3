@@ -22,7 +22,28 @@ if which figlet > /dev/null; then
 figlet moi
 echo -e "\n...is loading. Please wait!"
 else
-	echo "moi is loading. Please wait!"
+echo " x"
+echo " x        xx             xxxx xxx"
+echo " x      xx  xx         xx        x"
+echo " x    xx     xx       x           x"
+echo "  x   x        x     x            x"
+echo "  x  x         x    x              x"
+echo "  x x          x    x              x                 "
+echo "  x x           x  x               x                x"
+echo "  x x            x x               x                 "
+echo "   xx            x x               x"
+echo "   xx             x               xx"
+echo "   xx            xx               x"
+echo "   xx            xx              x         xxxx     x"
+echo "    x            xx             x      xxxxx   x    x"
+echo "    x            x            xx     xxxx      x    x"
+echo "    x            x            x      xx        x    x"
+echo "    x            x           xx     x          x    x"
+echo "    x                        x      xx        x     x"
+echo "    x                        xx      xx     xx      xx    x"
+echo "    x                          xx     xxxxxx         xxxxx"
+echo "    x"
+echo "          moi is loading. Please wait!"
 fi
 
 #Reads host entries from Request Header from the logs
