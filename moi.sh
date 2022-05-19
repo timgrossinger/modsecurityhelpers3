@@ -19,7 +19,7 @@ if ! which dialog > /dev/null; then
 fi
 
 if which figlet > /dev/null; then
-figlet moi
+figlet -f script moi
 echo -e "\n...is loading. Please wait!"
 else
 echo " x"
