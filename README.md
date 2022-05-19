@@ -86,7 +86,7 @@ export logpath=
 ### (not really) FAQ ###
 - moi quits unexpectedly
 
-if it quits unexpectedly it probably did not find logs of the chosen host where it (would have) intercepted
+if it quits unexpectedly it probably did not find logs of the chosen host where it (would have) intercepted (this actually should not happen anymore I think)
 
 - moi does not show the hosts that I have expected
 
