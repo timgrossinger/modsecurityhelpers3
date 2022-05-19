@@ -62,7 +62,6 @@ It will present you
 - the id of the matchin rule
 - information about what matched
 
-if it quits unexpectedly it probably did not find logs of the chosen host where it (would have) intercepted
 
 ### Change Time Frame ###
 
@@ -84,8 +83,21 @@ Don't forget to reset the logpath by either closing the active shell or
 export logpath=
 ```
 
+### (not really) FAQ ###
+- moi quits unexpectedly
+
+if it quits unexpectedly it probably did not find logs of the chosen host where it (would have) intercepted
+
+- moi does not show the hosts that I have expected
+
+you should try to clear the VSCS cache (very sophisticated cache system) by launching moi.sh like this
+
+```
+./moi.sh -r
+```
 
 ### TODO ###
 
   - add the possibility to write the result to a textfile
   - bugfixes
+  - further caching
