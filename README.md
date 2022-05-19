@@ -88,9 +88,9 @@ export logpath=
 
 if it quits unexpectedly it probably did not find logs of the chosen host where it (would have) intercepted (this actually should not happen anymore I think)
 
-- moi does not show the hosts that I have expected
+- moi does not show the hosts that I have expected. Why?
 
-you should try to clear the VSCS cache (very sophisticated cache system) by launching moi.sh like this
+you should try to clear the TSCS cache (tremendously sophisticated cache system) by launching moi.sh like this
 
 ```
 ./moi.sh -r
