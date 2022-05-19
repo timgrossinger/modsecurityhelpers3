@@ -75,6 +75,10 @@ or
 export logpath="/var/log/modsec_audit/www-data/"
 ./moi.sh
 ```
+or to use the directory you are in:
+```
+logpath=. /path/to/moi.sh
+```
 Don't forget to reset the logpath by either closing the active shell or
 ```
 export logpath=

@@ -65,7 +65,7 @@ echo "          moi is loading. Please wait!"
 fi
 
 #create tmpfile2 with the hosts
-if [ ! -f ${cachehosts} ]; then
+if [ ! -s ${cachehosts} ]; then
   grep -rHlP "Total Score:\ \d+" ${logpath} | xargs -I{} grep -rhE '^Host' {} | grep -vE [0-9] | sort | uniq | sed 's/.*\ //' > ${cachehosts}
 fi
 
