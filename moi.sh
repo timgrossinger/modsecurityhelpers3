@@ -3,11 +3,29 @@
 set -o pipefail
 
 tmpfile="/tmp/moi.tmp"
+cachehosts="/tmp/moi.cache"
 
 #Define Path where the logs are
 if [[ -z "$logpath" ]]; then
 logpath=/var/log/modsec_audit/www-data/$(date +%Y%m%d)
 fi
+
+#show help if wanted
+for i in "$@"; do
+  if [[ $i = "-h" || $i = "--help" ]]; then
+          echo "--- moi help ---"
+          echo " -h / --help: show this help"
+          echo " -r / --clear-cache: clears cache"
+          exit 0
+  fi
+done
+
+#clears cache if wanted
+for i in "$@"; do
+  if [[ $i = "-r" || $i = "--clear-cache" ]]; then
+          rm ${cachehosts}
+  fi
+done
 
 #test: is dialog installed?
 if ! which dialog > /dev/null; then
@@ -46,8 +64,13 @@ echo "    x"
 echo "          moi is loading. Please wait!"
 fi
 
+#create tmpfile2 with the hosts
+if [ ! -f ${cachehosts} ]; then
+  grep -rHlP "Total Score:\ \d+" ${logpath} | xargs -I{} grep -rhE '^Host' {} | grep -vE [0-9] | sort | uniq | sed 's/.*\ //' > ${cachehosts}
+fi
+
 #Reads host entries from Request Header from the logs
-hosts=$(grep -rHlP "Total Score:\ \d+" ${logpath} | xargs -I{} grep -rhE '^Host' {} | grep -vE [0-9] | sort | uniq | sed 's/.*\ //')
+hosts=$(cat ${cachehosts})
 
 #Check if X-Real-IP Header is present (specific Webserver/Reverse Proxy configuration)
 let realip=$(find ${logpath} -type f | head | xargs -I{} grep -E '^X-Real-IP' {} | wc -l 2>/dev/null)
