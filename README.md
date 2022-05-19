@@ -90,7 +90,7 @@ if it quits unexpectedly it probably did not find logs of the chosen host where 
 
 - moi does not show the hosts that I have expected. Why?
 
-you should try to clear the TSCS cache (tremendously sophisticated cache system) by launching moi.sh like this
+you should try to clear the TSCS cache (tremendously sophisticated caching system) by launching moi.sh like this
 
 ```
 ./moi.sh -r
