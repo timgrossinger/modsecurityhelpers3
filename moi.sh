@@ -1,12 +1,18 @@
 #!/bin/bash
+
+#uncomment to debug
 #set -x
+
+#activate pipefail
 set -o pipefail
 
 #set ignorestring
 #maybe to exclude logs caused by a scanner like burpsuite, ZAP,...
 #use IP addresses or (parts of) User-Agent
 #this is used as a regular expresion, so separate with pipes: |
-ignorestring="so-you-are-being-scanned"
+if [[ -z "$ignorestring" ]]; then
+  ignorestring="so-you-are-being-scanned"
+fi
 
 #sets path of temporary files
 #don't touch, if unsure
@@ -15,7 +21,7 @@ cachehosts="/tmp/moi.cache"
 
 #Define Path where the logs are
 if [[ -z "$logpath" ]]; then
-logpath=/var/log/modsec_audit/www-data/$(date +%Y%m%d)
+  logpath=/var/log/modsec_audit/www-data/$(date +%Y%m%d)
 fi
 
 #show help if wanted
