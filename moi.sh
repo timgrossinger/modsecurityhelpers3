@@ -2,7 +2,14 @@
 #set -x
 set -o pipefail
 
+#set ignorestring
+#maybe to exclude logs caused by a scanner like burpsuite, ZAP,...
+#use IP addresses or (parts of) User-Agent
+#this is used as a regular expresion, so separate with pipes: |
 ignorestring="so-you-are-being-scanned"
+
+#sets path of temporary files
+#don't touch, if unsure
 tmpfile="/tmp/moi.tmp"
 cachehosts="/tmp/moi.cache"
 
