@@ -67,7 +67,7 @@ fi
 
 #create tmpfile2 with the hosts
 if [ ! -s ${cachehosts} ]; then
-  grep -rHlP "Total Score:\ \d+" ${logpath} | xargs -I{} grep -HL "${ignorestring}" {} | xargs -I{} grep -hE '^Host' {} | grep -vE [0-9] | sort | uniq | sed 's/.*\ //' > ${cachehosts}
+  grep -rHlP "Total Score:\ \d+" ${logpath} | xargs -I{} grep -HLE "${ignorestring}" {} | xargs -I{} grep -hE '^Host' {} | grep -vE [0-9] | sort | uniq | sed 's/.*\ //' > ${cachehosts}
 fi
 
 #Reads host entries from Request Header from the logs
@@ -90,7 +90,7 @@ else
 fi
 
 #Reads messages & number of occurence
-messages=`grep -rHlP "^Host: $chosenhost" ${logpath} | xargs -I{} grep -HL "${ignorestring}" {} | xargs -I{} grep -rHlP "Total Score:\ \d+" {} | xargs -I{} grep -hP '^Message.*\[msg.+?\]' {} | grep -hPo '\[msg.+?\]' | sort | uniq -c | sed 's/^ *//' | sed -e 's/(/./g' | sed -e 's/)/./g' | sort -rh | grep -v 'Inbound\ Anomaly' | sed -re 's/\b([0-9]+)\b.*\[msg\ \"(.*)\"\]$/\"\1 \2\"/'`
+messages=`grep -rHlP "^Host: $chosenhost" ${logpath} | xargs -I{} grep -HLE "${ignorestring}" {} | xargs -I{} grep -rHlP "Total Score:\ \d+" {} | xargs -I{} grep -hP '^Message.*\[msg.+?\]' {} | grep -hPo '\[msg.+?\]' | sort | uniq -c | sed 's/^ *//' | sed -e 's/(/./g' | sed -e 's/)/./g' | sort -rh | grep -v 'Inbound\ Anomaly' | sed -re 's/\b([0-9]+)\b.*\[msg\ \"(.*)\"\]$/\"\1 \2\"/'`
 
 #Adds numbers for usage with the tool dialog and removes newlines/tabs
 messagesn=$(echo "${messages}" | nl -w1 | tr '\n' ' ' | tr '\t' ' ')
@@ -112,7 +112,7 @@ else
         echo -e "Host: ${chosenhost}\nMessage:\e[31m $chosenmessage\e[0m \n\n"
 fi
 
-grep -rHlP "^Host: $chosenhost" ${logpath} | xargs -I{} grep -HL "${ignorestring}" {} | xargs -I{} grep -rHlP "Total Score:\ \d+" {} | xargs -I{} grep -rlE "^Message.*$chosenmessage" {} > ${tmpfile}
+grep -rHlP "^Host: $chosenhost" ${logpath} | xargs -I{} grep -HLE "${ignorestring}" {} | xargs -I{} grep -rHlP "Total Score:\ \d+" {} | xargs -I{} grep -rlE "^Message.*$chosenmessage" {} > ${tmpfile}
 
 cat ${tmpfile}
 echo -e "\n"
