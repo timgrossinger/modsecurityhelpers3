@@ -107,7 +107,7 @@ fi
 #clear screen and show results
 clear
 if [ $chosenhostn = '999' ]; then
-        echo -e "Host: IP adress:\nMessage:\e[31m $chosenmessage\e[0m \n\n"
+        echo -e "Host: IP address\nMessage:\e[31m $chosenmessage\e[0m \n\n"
 else
         echo -e "Host: ${chosenhost}\nMessage:\e[31m $chosenmessage\e[0m \n\n"
 fi
