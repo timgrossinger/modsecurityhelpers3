@@ -65,7 +65,7 @@ echo "    x"
 echo "          moi is loading. Please wait!"
 fi
 
-#create tmpfile2 with the hosts
+#create cachehosts tempfile with the hosts (can save lots of time)
 if [ ! -s ${cachehosts} ]; then
   grep -rHlP "Total Score:\ \d+" ${logpath} | xargs -I{} grep -HLE "${ignorestring}" {} | xargs -I{} grep -hE '^Host' {} | grep -vE [0-9] | sort | uniq | sed 's/.*\ //' > ${cachehosts}
 fi
@@ -79,12 +79,12 @@ let realip=$(find ${logpath} -type f | head -n100 | xargs -I{} grep -E '^X-Real-
 #Adds numbers for usage with the tool dialog and removes newlines
 hostsn=$(echo "${hosts}" | nl -w1 | tr '\n' ' ')
 
-#Runs the tool dialog - choose host header to grep for (or IP adress)
+#Runs the tool dialog - choose host header to grep for (or IP address)
 chosenhostn=$(dialog --backtitle 'moi - a modsecurityhelpers tool' --menu --stdout 'Choose the host to filter for' 0 0 0 ${hostsn} 999 "IP address" 2>/dev/null)
 
-#set variable chosenhost to 1 number if IP address has been chosen
+#set variable chosenhost to regex of IP address when IP address has been chosen
 if [ $chosenhostn = '999' ]; then
-	chosenhost='\d{1,3}'
+	chosenhost='\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'
 else
 	chosenhost=$(echo "${hosts}" | sed -n ${chosenhostn}p)
 fi
@@ -101,10 +101,10 @@ chosenmessage=$(echo "${messages}" | sed -n ${chosenmessagen}p | sed -re "s/\b([
 
 if [[ -z "$chosenmessage" ]]; then
 	echo -e "Nothing found! Sorry!"
-	exit 0
+	exit 1
 fi
 
-#clear screen and show summary
+#clear screen and show results
 clear
 if [ $chosenhostn = '999' ]; then
         echo -e "Host: IP adress:\nMessage:\e[31m $chosenmessage\e[0m \n\n"
@@ -128,5 +128,6 @@ cat ${tmpfile} | xargs -I{} grep -oE "^Message.*$chosenmessage.*" {} | grep -oE 
 echo -e "\n"
 cat ${tmpfile} | xargs -I{} grep -oE "^Message.*$chosenmessage.*" {} | sed -re 's/\[file.*$/\n\n/g' | sort | uniq | sed 's/$/\n/'
 
+#clean up
 rm ${tmpfile}
 exit 0
