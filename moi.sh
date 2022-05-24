@@ -13,6 +13,9 @@ set -o pipefail
 if [[ -z "$ignorestring" ]]; then
   ignorestring="so-you-are-being-scanned"
 fi
+if [ $ignorestring = '' ]; then
+  ignorestring="dummystring1818181"
+fi
 
 #sets path of temporary files
 #don't touch, if unsure
