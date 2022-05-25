@@ -120,7 +120,7 @@ messages=`grep -rHlP "^Host: $chosenhost" ${logpath} | \
 	xargs -I{} grep -hP '^Message.*\[msg.+?\]' {} | \
 	grep -hPo '\[msg.+?\]' | sort | uniq -c | \
 	sed 's/^ *//' | sed -e 's/(/./g' | sed -e 's/)/./g' | sort -rh | \
-	grep -v 'Inbound\ Anomaly' | \
+	grep -vE '(In|Out)bound\ Anomaly' | \
 	sed -re 's/\b([0-9]+)\b.*\[msg\ \"(.*)\"\]$/\"\1 \2\"/'`
 
 #Adds numbers for usage with the tool dialog and removes newlines/tabs

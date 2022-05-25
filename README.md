@@ -2,14 +2,14 @@
 Helpers for modsecurity Logs
 
 The helpers at the moment:
-- 1 additional rule that logs the anomaly score even when the HTTP request isn't intercepted
+- 1 additional rule set that logs the anomaly score even when the HTTP request isn't intercepted
 - 1 interactive script that greps and filters logs for relevant data (feel free to set $logpath to whatever time frame is needed as it greps recursively from $logpath)
 
 ### The story ### 
  - when modsecurity is set to "on" but with a high anomaly threshold in order to NOT intercept the request (kind of like audit mode) it does not actually write the anomaly score into the log file.
 
-   Rule 2001099 changes this.
- - when in high-threshold-audit-mode: this change is needed for the script moi.sh to work, as it greps for the added log content.
+   The rules in ruleset_add_anomaly_score.after.conf changes this.
+ - when in high-threshold-audit-mode: this ruleset is needed for the script moi.sh to work, as it greps for the added log content.
  - it can be quite tricky to obtain relevant information from the modsecurity logs, the interactive script can help here
 
 
@@ -17,10 +17,10 @@ The helpers at the moment:
  - modsecurity v2
  - CoreRuleSet
 
-   tested with SecRuleEngine set to on with rule 2001099 and high threshold level
+   tested with SecRuleEngine set to on with rules 2001099 and 2001100 and high threshold level
 
-   tested with SecRuleEngine set to on with intercepted requests (works without rule 2001099)
- - if needed for high-threshold-audit-mode: Rule 2001099 that is run AFTER the rules of CoreRuleSet (defined in apache-mods/security2.conf)
+   tested with SecRuleEngine set to on with intercepted requests (works without ruleset 2001099/2001100)
+ - if needed for high-threshold-audit-mode: Rules 2001099/2001100 that run AFTER the rules of CoreRuleSet (defined in apache-mods/security2.conf)
  - SecAuditLogType should be set to "Concurrent" in /etc/modsecurity/modsecurity.conf
 
 ```
