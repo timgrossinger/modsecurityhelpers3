@@ -88,6 +88,8 @@ export logpath=
 
 if it quits unexpectedly it probably did not find logs of the chosen host where it (would have) intercepted (this actually should not happen anymore I think)
 
+Maybe try clearing t he TSCS cache (tremendously sophisticated caching system)
+
 - moi.sh does not show the hosts that I have expected. Why?
 
 you should try to clear the TSCS cache (tremendously sophisticated caching system) by launching moi.sh like this
