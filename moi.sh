@@ -18,7 +18,18 @@ if [[ ${#ignorestring} -lt 3 ]]; then
   exit 1
 fi
 
-searchstring="Total Score:\ \d+"
+#set paranoia-level filter
+for i in "$@"; do
+  if [[ $i = "--paranoia-level/2" || $i = "-pl2" ]]; then
+    searchstring="paranoia-level/2"
+  elif [[ $i = "--paranoia-level/3" || $i = "-pl3" ]]; then
+    searchstring="paranoia-level/3"
+  elif [[ $i = "--paranoia-level/4" || $i = "-pl4" ]]; then
+    searchstring="paranoia-level/4"
+  else
+    searchstring="Total Score:\ \d+"
+  fi
+done
 
 #sets path of temporary files
 #don't touch, if unsure
@@ -36,6 +47,9 @@ for i in "$@"; do
           echo "--- moi help ---"
           echo " -h / --help: show this help"
           echo " -r / --clear-cache: clears cache"
+	  echo " --paranoia-level/2 / -pl2: only show paranoia level 2 messages"
+	  echo " --paranoia-level/3 / -pl3: only show paranoia level 3 messages"
+	  echo " --paranoia-level/4 / -pl4: only show paranoia level 4 messages"
           exit 0
   fi
 done

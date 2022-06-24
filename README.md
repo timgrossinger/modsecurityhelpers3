@@ -62,6 +62,31 @@ It will present you
 - the id of the matchin rule
 - information about what matched
 
+### Filter when using Executing Paranoia Level ###
+
+If you use EXECUTING Paranoia level, this might be handy:
+
+```
+ --paranoia-level/2 / -pl2: only show paranoia level 2 messages
+ --paranoia-level/3 / -pl3: only show paranoia level 3 messages
+ --paranoia-level/4 / -pl4: only show paranoia level 4 messages
+```
+
+This is useful in the following case: 
+
+Paranoia Level is set to 1
+
+Executing Paranoia Level is set to 2
+
+Now a http request with the following scores:
+
+Paranoia level 1 score = 0
+Paranoia level 2 score = 5 (remember PL2 is only set to "executing")
+
+Use -pl2 to show paranoia level 2 requests. Not using -pl2 will show nothing, because paranoia level 1 score is 0.
+-pl3 and -pl4 will show nothing.
+
+Remember to clear cache with "moi -r"
 
 ### Change Time Frame ###
 
