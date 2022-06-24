@@ -41,7 +41,13 @@ done
 #clears cache if wanted
 for i in "$@"; do
   if [[ $i = "-r" || $i = "--clear-cache" ]]; then
+	  echo "Clearing cache..."
+	  echo "Deleting ${cachehosts} 0%"
           rm ${cachehosts}
+	  echo "Deleting ${cachehosts} 100%"
+	  echo "Cache cleared."
+	  echo "New cache is being generated."
+	  echo "Do not interrupt!"
   fi
 done
 
