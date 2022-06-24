@@ -18,6 +18,8 @@ if [[ ${#ignorestring} -lt 3 ]]; then
   exit 1
 fi
 
+searchstring="Total Score:\ \d+"
+
 #sets path of temporary files
 #don't touch, if unsure
 tmpfile="/tmp/moi.tmp"
@@ -90,7 +92,7 @@ fi
 
 #create cachehosts tempfile with the hosts (can save lots of time)
 if [ ! -s ${cachehosts} ]; then
-  grep -rHlP "Total Score:\ \d+" ${logpath} | \
+  grep -rHlP "${searchstring}" ${logpath} | \
 	  xargs -I{} grep -HLE "${ignorestring}" {} | \
 	  xargs -I{} grep -hE '^Host' {} | \
 	  grep -vE [0-9] | sort | uniq | \
@@ -122,7 +124,7 @@ fi
 #Reads messages & number of occurence
 messages=`grep -rHlP "^Host: $chosenhost" ${logpath} | \
 	xargs -I{} grep -HLE "${ignorestring}" {} | \
-	xargs -I{} grep -rHlP "Total Score:\ \d+" {} | \
+	xargs -I{} grep -rHlP "${searchstring}" {} | \
 	xargs -I{} grep -hP '^Message.*\[msg.+?\]' {} | \
 	grep -hPo '\[msg.+?\]' | sort | uniq -c | \
 	sed 's/^ *//' | sed -e 's/(/./g' | sed -e 's/)/./g' | sort -rh | \
@@ -151,7 +153,7 @@ fi
 
 grep -rHlP "^Host: $chosenhost" ${logpath} | \
 	xargs -I{} grep -HLE "${ignorestring}" {} | \
-	xargs -I{} grep -rHlP "Total Score:\ \d+" {} | \
+	xargs -I{} grep -rHlP "${searchstring}" {} | \
 	xargs -I{} grep -rlE "^Message.*$chosenmessage" {} > ${tmpfile}
 
 cat ${tmpfile}
