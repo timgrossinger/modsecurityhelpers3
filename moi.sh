@@ -21,11 +21,11 @@ fi
 #set paranoia-level filter
 for i in "$@"; do
   if [[ $i = "--paranoia-level/2" || $i = "-pl2" ]]; then
-    searchstring="paranoia-level/2"
+    searchstring="^Message.*paranoia-level/2"
   elif [[ $i = "--paranoia-level/3" || $i = "-pl3" ]]; then
-    searchstring="paranoia-level/3"
+    searchstring="^Message.*paranoia-level/3"
   elif [[ $i = "--paranoia-level/4" || $i = "-pl4" ]]; then
-    searchstring="paranoia-level/4"
+    searchstring="^Message.*paranoia-level/4"
   else
     searchstring="Total Score:\ \d+"
   fi
