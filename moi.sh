@@ -7,16 +7,21 @@
 set -o pipefail
 
 #set defaults
-ignorestring="so-you-are-being-scanned"
-searchstring="Total Score:\ \d+"
-logpath="/var/log/modsec_audit/www-data/$(date +%Y%m%d)"
 
-#sets path of temporary files
-#don't touch, if unsure
-tmpfile="/tmp/moi.tmp"
-cachehosts="/tmp/moi.cache"
+#when searchstring matches, the log file is going to be parsed
+  searchstring="Total Score:\ \d+"
 
-#show help
+#when ignorestring matches, the log file is going to be ignored 
+  ignorestring="so-you-are-being-scanned"
+
+#logpath defines the location from where moi.sh scans recursively
+  logpath="/var/log/modsec_audit/www-data/$(date +%Y%m%d)"
+
+#sets path of temporary files - don't touch, if unsure
+  tmpfile="/tmp/moi.tmp"
+  cachehosts="/tmp/moi.cache"
+
+#function showhelp
 showhelp() {
   echo "--- $(basename $0) help ---"
   echo
