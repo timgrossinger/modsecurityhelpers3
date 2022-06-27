@@ -91,10 +91,6 @@ while getopts ${optstring} arg; do
   esac
 done
 
-echo $searchstring
-echo $ignorestring
-exit 0
-
 #sets path of temporary files
 #don't touch, if unsure
 tmpfile="/tmp/moi.tmp"
