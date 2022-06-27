@@ -57,8 +57,8 @@ while getopts ${optstring} arg; do
       echo "Do not interrupt!"
       ;;
     p)
-      if [[ ${optarg} =~ '^1-4$' ]]; then
-      searchstring="^Message.*paranoia-level/${optarg}"
+      if [[ ${optarg} =~ '^[1-4]$' ]]; then
+        searchstring="^Message.*paranoia-level/${optarg}"
       else 
 	echo "Error! Possible values: 1,2,3,4"
 	echo
