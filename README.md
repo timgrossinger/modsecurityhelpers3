@@ -67,9 +67,9 @@ It will present you
 If you use EXECUTING Paranoia level, this might be handy:
 
 ```
--p2 Filter for paranoia level 2 Messages
--p3 Filter for paranoia level 3 Messages
--p4 Filter for paranoia level 4 Messages
+-p2	Filter for paranoia level 2 Messages
+-p3	Filter for paranoia level 3 Messages
+-p4	Filter for paranoia level 4 Messages
 ```
 
 This is useful in the following case: 
