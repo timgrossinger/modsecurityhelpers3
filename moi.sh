@@ -20,25 +20,34 @@ cachehosts="/tmp/moi.cache"
 showhelp() {
   echo "--- $(basename $0) help ---"
   echo
+# -e
   echo -e "\e[31m-h\e[0m"
   echo "show this help"
   echo
+# -l
   echo -e "\e[31m-l PATH\e[0m"
   echo "sets logpath and with that the timeframe" 
+  echo 'Default: /var/log/modsec_audit/www-data/$(date +%Y%m%d)'
+  echo "(Use today's logs)"
   echo "Examples:"
   echo "./$(basename $0) -l ."
   echo "./$(basename $0) -l /var/log/modsec_audit/www-data/20220612"
   echo
+# -r
   echo -e "\e[31m-r\e[0m"
   echo "clears cache"
   echo
+# -p
   echo -e "\e[31m-p n\e[0m"
   echo "filter for paranoia level (useful if executing paranoia level is set higher than paranoia level)"
   echo "n might be 1, 2, 3 or 4"
+  echo "Default: not set"
   echo "Example: ./$(basename $0) -p 2"
   echo
+# -i
   echo -e "\e[31m-i\e[0m"
   echo "set ignorestring"
+  echo 'Default: "so-you-are-being-scanned"'
   echo "Example: ./$(basename $0) -i \"128.2.1.2|pentesting-scanner-software|1.2.3.4\""
   echo
 exit 1
