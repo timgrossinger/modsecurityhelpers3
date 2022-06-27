@@ -28,7 +28,7 @@ showhelp() {
   echo "clears cache"
   echo
   echo -e "\e[31m-p n\e[0m"
-  echo "filter for paranoia level (useful if execute paranoia level is set higher than paranoia level)"
+  echo "filter for paranoia level (useful if executing paranoia level is set higher than paranoia level)"
   echo "n might be 1, 2, 3 or 4"
   echo "Example: ./$(basename $0) -p 2"
   echo
