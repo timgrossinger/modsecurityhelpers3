@@ -66,11 +66,21 @@ while getopts ${optstring} arg; do
       fi
       ;;
     i) 
-      ignorestring="${OPTARG}"
-      if [[ ${#ignorestring} -lt 3 ]]; then
+      if [[ ${#OPTARG} -lt 5 ]]; then
       echo "ignorestring too short! (or something else is wrong - try using quotes?)"
       echo
       showhelp
+        else
+      ignorestring="${OPTARG}"
+      fi
+      ;;
+    l)
+      if ! [[ -d ${OPTARG} ]]; then
+        echo "Directory ${OPTARG} does not seem to exist."
+	echo
+	showhelp
+      else
+        logpath="${OPTARG}"
       fi
       ;;
     ?) 
