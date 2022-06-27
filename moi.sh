@@ -40,7 +40,7 @@ exit 1
 }
 
 #define list of argumentes given on the command line
-optstring=":hrp:i:"
+optstring=":hrp:i:l"
 
 while getopts ${optstring} arg; do
   case ${arg} in
