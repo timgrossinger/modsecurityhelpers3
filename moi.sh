@@ -6,66 +6,69 @@
 #activate pipefail
 set -o pipefail
 
-#set ignorestring
-#maybe to exclude logs caused by a scanner like burpsuite, ZAP,...
-#use IP addresses or (parts of) User-Agent
-#this is used as a regular expresion, so separate with pipes: |
-if [[ -z "$ignorestring" ]]; then
-  ignorestring="so-you-are-being-scanned"
-fi
-if [[ ${#ignorestring} -lt 3 ]]; then
-  echo "ignorestring too short"
-  exit 1
-fi
+#set defaults
+ignorestring="so-you-are-being-scanned"
+searchstring="Total Score:\ \d+"
+ ogpath=/var/log/modsec_audit/www-data/$(date +%Y%m%d)
 
-#set paranoia-level filter
-for i in "$@"; do
-  if [[ $i = "--paranoia-level/2" || $i = "-pl2" ]]; then
-    searchstring="^Message.*paranoia-level/2"
-  elif [[ $i = "--paranoia-level/3" || $i = "-pl3" ]]; then
-    searchstring="^Message.*paranoia-level/3"
-  elif [[ $i = "--paranoia-level/4" || $i = "-pl4" ]]; then
-    searchstring="^Message.*paranoia-level/4"
-  else
-    searchstring="Total Score:\ \d+"
-  fi
-done
+
+#show help
+showhelp() {
+  echo "--- moi help ---"
+  echo
+  echo " -h		show this help"
+  echo
+  echo " -l PATH	sets logpath and with that the timeframe" 
+  echo " Examples:"
+  echo " ./$(basename $0) -l ."
+  echo " ./$(basename $0) -l /var/log/modsec_audit/www-data/20220612"
+  echo
+  echo " -r		clears cache"
+  echo
+  echo " -p n		filter for exec paranoia level"
+  echo " n might be 2, 3 or 4"
+  echo
+  echo " Example: ./$(basename $0) -p 2"
+  echo
+  echo " -i		set ignorestring"
+  echo " Example: ./$(basename $0) -i "128.2.1.2|pentesting-scanner-software|1.2.3.4""
+  exit 1
+}
+
+#define list of argumentes given on the command line
+optstring=":hrp:i:"
+
+while  getopts ${optstring} arg; do
+  case "${arg}" in
+    h) showhelp 
+       ;;
+    r) echo "Clearing cache..."
+       echo "Deleting ${cachehosts} 0%"
+       rm ${cachehosts}
+       echo "Deleting ${cachehosts} 100%"
+       echo "Cache cleared."
+       echo "New cache is being generated."
+       echo "Do not interrupt!"
+       ;;
+    p) searchstring="^Message.*paranoia-level/${optarg}"
+       ;;
+    i) ignorestring="${OPTARG}"
+       if [[ ${ignorestring}  -lt 3 ]]; then
+	 echo "ignorestring too short!"
+	 echo
+	 showhelp
+       fi
+       ;;
+    ?) echo "Invalid command: -$(OPTARG)."
+       echo 
+       showhelp
+       ;;
+  esac
 
 #sets path of temporary files
 #don't touch, if unsure
 tmpfile="/tmp/moi.tmp"
 cachehosts="/tmp/moi.cache"
-
-#Define Path where the logs are
-if [[ -z "$logpath" ]]; then
-  logpath=/var/log/modsec_audit/www-data/$(date +%Y%m%d)
-fi
-
-#show help if wanted
-for i in "$@"; do
-  if [[ $i = "-h" || $i = "--help" ]]; then
-          echo "--- moi help ---"
-          echo " -h / --help: show this help"
-          echo " -r / --clear-cache: clears cache"
-	  echo " --paranoia-level/2 / -pl2: only show paranoia level 2 messages"
-	  echo " --paranoia-level/3 / -pl3: only show paranoia level 3 messages"
-	  echo " --paranoia-level/4 / -pl4: only show paranoia level 4 messages"
-          exit 0
-  fi
-done
-
-#clears cache if wanted
-for i in "$@"; do
-  if [[ $i = "-r" || $i = "--clear-cache" ]]; then
-	  echo "Clearing cache..."
-	  echo "Deleting ${cachehosts} 0%"
-          rm ${cachehosts}
-	  echo "Deleting ${cachehosts} 100%"
-	  echo "Cache cleared."
-	  echo "New cache is being generated."
-	  echo "Do not interrupt!"
-  fi
-done
 
 #test: is dialog installed?
 if ! which dialog > /dev/null; then
