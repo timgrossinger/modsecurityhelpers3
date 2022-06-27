@@ -84,7 +84,7 @@ while getopts ${optstring} arg; do
       fi
       ;;
     ?) 
-      echo "Invalid command: -$(OPTARG)."
+      echo "Invalid command: -${OPTARG}."
       echo 
       showhelp
       ;;
