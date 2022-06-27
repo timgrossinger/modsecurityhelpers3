@@ -11,6 +11,11 @@ ignorestring="so-you-are-being-scanned"
 searchstring="Total Score:\ \d+"
 logpath="/var/log/modsec_audit/www-data/$(date +%Y%m%d)"
 
+#sets path of temporary files
+#don't touch, if unsure
+tmpfile="/tmp/moi.tmp"
+cachehosts="/tmp/moi.cache"
+
 #show help
 showhelp() {
   echo "--- $(basename $0) help ---"
@@ -47,15 +52,6 @@ while getopts ${optstring} arg; do
     h) 
       showhelp 
       ;;
-    r) 
-      echo "Clearing cache..."
-      echo "Deleting ${cachehosts} 0%"
-      rm ${cachehosts}
-      echo "Deleting ${cachehosts} 100%"
-      echo "Cache cleared."
-      echo "New cache is being generated."
-      echo "Do not interrupt!"
-      ;;
     p)
       if [[ ${OPTARG} =~ ^[1-4]$ ]]; then
         searchstring="^Message.*paranoia-level/${OPTARG}"
@@ -83,6 +79,15 @@ while getopts ${optstring} arg; do
         logpath="${OPTARG}"
       fi
       ;;
+    r) 
+      echo "Clearing cache..."
+      echo "Deleting ${cachehosts} 0%"
+      rm ${cachehosts}
+      echo "Deleting ${cachehosts} 100%"
+      echo "Cache cleared."
+      echo "New cache is being generated."
+      echo "Do not interrupt!"
+      ;;
     ?) 
       echo "Invalid command: -${OPTARG}."
       echo 
@@ -91,10 +96,6 @@ while getopts ${optstring} arg; do
   esac
 done
 
-#sets path of temporary files
-#don't touch, if unsure
-tmpfile="/tmp/moi.tmp"
-cachehosts="/tmp/moi.cache"
 
 #test: is dialog installed?
 if ! which dialog > /dev/null; then
