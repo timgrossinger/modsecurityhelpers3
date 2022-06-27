@@ -138,7 +138,7 @@ ignorestring="fakechromiumengineobyburpsuite|80.1.45.99"
 
 ### TODO ###
 
-  - add features reagarding paranoia level (filter for specific paranoia level, show paranoia level)
+  - add features reagarding paranoia level (show paranoia level somewhere)
   - show anomaly score of each request
   - add the possibility to write the result to a textfile
   - bugfixes
