@@ -9,61 +9,81 @@ set -o pipefail
 #set defaults
 ignorestring="so-you-are-being-scanned"
 searchstring="Total Score:\ \d+"
- ogpath=/var/log/modsec_audit/www-data/$(date +%Y%m%d)
-
+logpath="/var/log/modsec_audit/www-data/$(date +%Y%m%d)"
 
 #show help
 showhelp() {
-  echo "--- moi help ---"
+  echo "--- $(basename $0) help ---"
   echo
-  echo " -h		show this help"
+  echo -e "\e[31m-h\e[0m"
+  echo "show this help"
   echo
-  echo " -l PATH	sets logpath and with that the timeframe" 
-  echo " Examples:"
-  echo " ./$(basename $0) -l ."
-  echo " ./$(basename $0) -l /var/log/modsec_audit/www-data/20220612"
+  echo -e "\e[31m-l PATH\e[0m"
+  echo "sets logpath and with that the timeframe" 
+  echo "Examples:"
+  echo "./$(basename $0) -l ."
+  echo "./$(basename $0) -l /var/log/modsec_audit/www-data/20220612"
   echo
-  echo " -r		clears cache"
+  echo -e "\e[31m-r\e[0m"
+  echo "clears cache"
   echo
-  echo " -p n		filter for exec paranoia level"
-  echo " n might be 2, 3 or 4"
+  echo -e "\e[31m-p n\e[0m"
+  echo "filter for paranoia level (useful if execute paranoia level is set higher than paranoia level)"
+  echo "n might be 1, 2, 3 or 4"
+  echo "Example: ./$(basename $0) -p 2"
   echo
-  echo " Example: ./$(basename $0) -p 2"
+  echo -e "\e[31m-i\e[0m"
+  echo "set ignorestring"
+  echo "Example: ./$(basename $0) -i \"128.2.1.2|pentesting-scanner-software|1.2.3.4\""
   echo
-  echo " -i		set ignorestring"
-  echo " Example: ./$(basename $0) -i "128.2.1.2|pentesting-scanner-software|1.2.3.4""
-  exit 1
+exit 1
 }
 
 #define list of argumentes given on the command line
 optstring=":hrp:i:"
 
-while  getopts ${optstring} arg; do
-  case "${arg}" in
-    h) showhelp 
-       ;;
-    r) echo "Clearing cache..."
-       echo "Deleting ${cachehosts} 0%"
-       rm ${cachehosts}
-       echo "Deleting ${cachehosts} 100%"
-       echo "Cache cleared."
-       echo "New cache is being generated."
-       echo "Do not interrupt!"
-       ;;
-    p) searchstring="^Message.*paranoia-level/${optarg}"
-       ;;
-    i) ignorestring="${OPTARG}"
-       if [[ ${ignorestring}  -lt 3 ]]; then
-	 echo "ignorestring too short!"
-	 echo
-	 showhelp
-       fi
-       ;;
-    ?) echo "Invalid command: -$(OPTARG)."
-       echo 
-       showhelp
-       ;;
+while getopts ${optstring} arg; do
+  case ${arg} in
+    h) 
+      showhelp 
+      ;;
+    r) 
+      echo "Clearing cache..."
+      echo "Deleting ${cachehosts} 0%"
+      rm ${cachehosts}
+      echo "Deleting ${cachehosts} 100%"
+      echo "Cache cleared."
+      echo "New cache is being generated."
+      echo "Do not interrupt!"
+      ;;
+    p)
+      if [[ ${optarg} =~ '^1-4$' ]]; then
+      searchstring="^Message.*paranoia-level/${optarg}"
+      else 
+	echo "Error! Possible values: 1,2,3,4"
+	echo
+        showhelp
+      fi
+      ;;
+    i) 
+      ignorestring="${OPTARG}"
+      if [[ ${ignorestring} -lt 3 ]]; then
+      echo "ignorestring too short!"
+      echo
+      showhelp
+      fi
+      ;;
+    ?) 
+      echo "Invalid command: -$(OPTARG)."
+      echo 
+      showhelp
+      ;;
   esac
+done
+
+echo $searchstring
+echo $ignorestring
+exit 0
 
 #sets path of temporary files
 #don't touch, if unsure
