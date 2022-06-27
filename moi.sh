@@ -50,6 +50,8 @@ showhelp() {
   echo 'Default: "so-you-are-being-scanned"'
   echo "Example: ./$(basename $0) -i \"128.2.1.2|pentesting-scanner-software|1.2.3.4\""
   echo
+  echo "Everything can combined like this:"
+  echo 'moi -l . -p2 -r -i "192.168.1.1|iamapentestingsoftware"'
 exit 1
 }
 
