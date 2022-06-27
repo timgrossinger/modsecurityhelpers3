@@ -67,8 +67,8 @@ while getopts ${optstring} arg; do
       ;;
     i) 
       ignorestring="${OPTARG}"
-      if [[ ${ignorestring} -lt 3 ]]; then
-      echo "ignorestring too short!"
+      if [[ ${#ignorestring} -lt 3 ]]; then
+      echo "ignorestring too short! (or something else is wrong - try using quotes?)"
       echo
       showhelp
       fi
