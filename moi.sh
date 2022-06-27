@@ -46,7 +46,7 @@ showhelp() {
   echo
 # -i
   echo -e "\e[31m-i\e[0m"
-  echo "set ignorestring"
+  echo "set ignorestring: exclude log files that include the following string or one of the defined strings"
   echo 'Default: "so-you-are-being-scanned"'
   echo "Example: ./$(basename $0) -i \"128.2.1.2|pentesting-scanner-software|1.2.3.4\""
   echo
