@@ -40,7 +40,7 @@ showhelp() {
 # -p
   echo -e "\e[31m-p n\e[0m"
   echo "filter for paranoia level (useful if executing paranoia level is set higher than paranoia level)"
-  echo "n might be 1, 2, 3 or 4"
+  echo "n must be 1, 2, 3 or 4"
   echo "Default: not set"
   echo "Example: ./$(basename $0) -p 2"
   echo
