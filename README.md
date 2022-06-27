@@ -95,10 +95,13 @@ Remember to clear cache with "moi -r"
 
 ### Change Time Frame ###
 
-Use -l!
-Example:
+Use -l (smaller case L)
+
+Examples:
 ```
 ./moi.sh -l "/var/log/modsec_audit/www-data/"
+```
+or 
 ```
 ./moi.sh -l .
 ```
