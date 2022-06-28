@@ -59,7 +59,7 @@ showhelp() {
   echo -e "\e[31m-o\e[0m"
   echo "enable export function, so that you can work with the matching files"
   echo "Default: no export, moi is trying to clean up properly"
-  echo "Example: ./$basename $0) -o \"/tmp/exportfile\""
+  echo "Example: ./$(basename $0) -o \"/tmp/exportfile\""
   echo
   echo "Everything can be combined like this:"
   echo 'moi -l . -p2 -r -i "192.168.1.1|iamapentestingsoftware"'
