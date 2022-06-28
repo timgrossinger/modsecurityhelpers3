@@ -85,14 +85,14 @@ while getopts ${optstring} arg; do
       if [[ ${OPTARG} =~ ^[1-4]$ ]]; then
         searchstring="^Message.*paranoia-level/${OPTARG}"
       else 
-	echo "Error! Possible values: 1,2,3,4"
+	echo "ERROR! Possible values: 1,2,3,4"
 	echo
         showhelp
       fi
       ;;
     i) 
       if [[ ${#OPTARG} -lt 5 ]]; then
-        echo "ignorestring too short! (or something else is wrong - try using quotes?)"
+        echo "ERROR! ignorestring too short! (or something else is wrong - try using quotes?)"
         echo
         showhelp
       else
@@ -101,7 +101,7 @@ while getopts ${optstring} arg; do
       ;;
     l)
       if ! [[ -d ${OPTARG} ]]; then
-        echo "Directory ${OPTARG} does not seem to exist."
+        echo "ERROR! Directory ${OPTARG} does not seem to exist."
 	echo
 	showhelp
       else
@@ -126,7 +126,9 @@ while getopts ${optstring} arg; do
         echo "Export enabled, writing list of files to ${OPTARG}"
         echo
       else
-	echo "Error! Could not create output file!"
+	echo
+	echo "ERROR! Could not create output file!"
+	showhelp
       fi
       ;;
     s)
@@ -134,7 +136,7 @@ while getopts ${optstring} arg; do
       echo "-s has been given. Individual scores will be shown, if present in the logfiles - needs custom rules 5002001/5002002"
       ;;
     ?) 
-      echo "Invalid command: -${OPTARG}."
+      echo "ERROR! Invalid command: -${OPTARG}."
       echo 
       showhelp
       ;;
@@ -148,7 +150,8 @@ if ! which dialog > /dev/null; then
 	echo dialog not found
 	echo Please install dialog with \"sudo apt install dialog\"
 	echo --- ERROR ---
-	exit 1
+        echo
+	showhelp
 fi
 
 if which figlet > /dev/null; then
