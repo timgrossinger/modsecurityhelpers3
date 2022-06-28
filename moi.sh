@@ -6,6 +6,9 @@
 #activate pipefail
 set -o pipefail
 
+#set timestamp variable
+TIMESTAMP="\e[32m$(date "+%a %W %H:%M:%S:")\e[0m"
+
 #set defaults
 
 #when searchstring matches, the log file is going to be parsed
@@ -85,14 +88,14 @@ while getopts ${optstring} arg; do
       if [[ ${OPTARG} =~ ^[1-4]$ ]]; then
         searchstring="^Message.*paranoia-level/${OPTARG}"
       else 
-	echo "ERROR! Possible values: 1,2,3,4"
+	echo -e "$TIMESTAMP ERROR! Possible values: 1,2,3,4"
 	echo
         showhelp
       fi
       ;;
     i) 
       if [[ ${#OPTARG} -lt 5 ]]; then
-        echo "ERROR! ignorestring too short! (or something else is wrong - try using quotes?)"
+        echo -e "$TIMESTAMP ERROR! ignorestring too short! (or something else is wrong - try using quotes?)"
         echo
         showhelp
       else
@@ -101,7 +104,7 @@ while getopts ${optstring} arg; do
       ;;
     l)
       if ! [[ -d ${OPTARG} ]]; then
-        echo "ERROR! Directory ${OPTARG} does not seem to exist."
+        echo -e "$TIMESTAMP ERROR! Directory ${OPTARG} does not seem to exist."
 	echo
 	showhelp
       else
@@ -109,13 +112,13 @@ while getopts ${optstring} arg; do
       fi
       ;;
     r) 
-      echo "Clearing cache..."
-      echo "Deleting ${cachehosts} 0%"
+      echo -e "$TIMESTAMP Clearing cache..."
+      echo -e "$TIMESTAMP Deleting ${cachehosts} 0%"
       rm ${cachehosts}
-      echo "Deleting ${cachehosts} 100%"
-      echo "Cache cleared."
-      echo "New cache is being generated."
-      echo "Do not interrupt!"
+      echo -e "$TIMESTAMP Deleting ${cachehosts} 100%"
+      echo -e "$TIMESTAMP Cache cleared."
+      echo -e "$TIMESTAMP New cache is being generated."
+      echo -e "$TIMESTAMP Do not interrupt!"
       echo
       ;;
     o)
@@ -123,20 +126,20 @@ while getopts ${optstring} arg; do
       touch ${outputfile}
       if [ -f ${outputfile} ]; then
         export=1
-        echo "Export enabled, writing list of files to ${OPTARG}"
+        echo -e "$TIMESTAMP Export enabled, writing list of files to ${OPTARG}"
         echo
       else
 	echo
-	echo "ERROR! Could not create output file!"
+	echo -e "$TIMESTAMP ERROR! Could not create output file!"
 	showhelp
       fi
       ;;
     s)
       showscores=1
-      echo "-s has been given. Individual scores will be shown, if present in the logfiles - needs custom rules 5002001/5002002"
+      echo -e "$TIMESTAMP -s has been given. Individual scores will be shown, if present in the logfiles - needs custom rules 5002001/5002002"
       ;;
     ?) 
-      echo "ERROR! Invalid command: -${OPTARG}."
+      echo -e "$TIMESTAMP ERROR! Invalid command: -${OPTARG}."
       echo 
       showhelp
       ;;
@@ -146,10 +149,9 @@ done
 
 #test: is dialog installed?
 if ! which dialog > /dev/null; then
-	echo --- ERROR ---
+	echo -e "$TIMESTAMP ERROR!"
 	echo dialog not found
 	echo Please install dialog with \"sudo apt install dialog\"
-	echo --- ERROR ---
         echo
 	showhelp
 fi
