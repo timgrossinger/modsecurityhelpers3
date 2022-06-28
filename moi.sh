@@ -253,7 +253,7 @@ fi
 
 echo -e "\n"
 
-if [ $export -eq 1 ]; then
+if [[ $export -eq 1 ]]; then
   cat ${tmpfile} > ${outputfile}
   echo
   echo "-o has been given:"
