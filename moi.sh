@@ -243,6 +243,10 @@ if [ $export -eq 1 ]; then
   echo
   echo "-o has been given:"
   echo "This list is saved to ${outputfile}"
+  echo "Maybe like this..."
+  echo "cat ${outputfile} | xargs -I{} grep \"^User-Agent\" {}"
+  echo "or"
+  echo "cat ${outputfile} | xargs -I{} grep \"^Origin\" {}"
 fi
 
 echo -e "\n"
