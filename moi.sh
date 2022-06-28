@@ -248,7 +248,7 @@ if [ $export -eq 1 ]; then
   echo "or"
   echo "cat ${outputfile} | xargs -I{} grep \"^Origin\" {}"
   echo "or"
-  echo 'cat /tmp/bla | xargs -I{} bash -c "echo {}; grep -Po 'scores.*paralevel4:\d[0-9]*' {} | sort | uniq"'
+  echo "cat ${outputfile}  | xargs -I{} bash -c \"echo {}; grep -Po \"scores.*paralevel4:[0-9]*\" {} | head -n1\""
 fi
 
 echo -e "\n"
