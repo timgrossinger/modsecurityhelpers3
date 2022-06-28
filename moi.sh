@@ -121,7 +121,7 @@ while getopts ${optstring} arg; do
     o)
       outputfile="${OPTARG}"
       touch ${outputfile}
-      if [ -w ${outputfile} ]; then
+      if [ -f ${outputfile} ]; then
         export=1
         echo "Export enabled, writing list of files to ${OPTARG}"
         echo
