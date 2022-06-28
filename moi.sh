@@ -54,11 +54,12 @@ showhelp() {
   echo "set ignorestring: exclude log files that include the following string or one of the defined strings"
   echo 'Default: "so-you-are-being-scanned"'
   echo "Example: ./$(basename $0) -i \"128.2.1.2|pentesting-scanner-software|1.2.3.4\""
-# -x
-  echo -e "\e[31m-x\e[0m"
+  echo
+# -o
+  echo -e "\e[31m-o\e[0m"
   echo "enable export function, so that you can work with the matching files"
   echo "Default: no export, moi is trying to clean up properly"
-  echo "Example: ./$basename $0) -x \"/tmp/exportfile\""
+  echo "Example: ./$basename $0) -o \"/tmp/exportfile\""
   echo
   echo "Everything can be combined like this:"
   echo 'moi -l . -p2 -r -i "192.168.1.1|iamapentestingsoftware"'
