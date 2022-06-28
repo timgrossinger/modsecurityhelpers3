@@ -54,14 +54,20 @@ showhelp() {
   echo "set ignorestring: exclude log files that include the following string or one of the defined strings"
   echo 'Default: "so-you-are-being-scanned"'
   echo "Example: ./$(basename $0) -i \"128.2.1.2|pentesting-scanner-software|1.2.3.4\""
+# -x
+  echo -e "\e[31m-x\e[0m"
+  echo "enable export function, so that you can work with the matching files"
+  echo "Default: no export, moi is trying to clean up properly"
+  echo "Example: ./$basename $0) -x \"/tmp/exportfile\""
   echo
   echo "Everything can be combined like this:"
   echo 'moi -l . -p2 -r -i "192.168.1.1|iamapentestingsoftware"'
+
 exit 1
 }
 
 #define list of argumentes given on the command line
-optstring=":hrp:i:l:"
+optstring=":hrp:i:l:o:"
 
 while getopts ${optstring} arg; do
   case ${arg} in
@@ -79,11 +85,11 @@ while getopts ${optstring} arg; do
       ;;
     i) 
       if [[ ${#OPTARG} -lt 5 ]]; then
-      echo "ignorestring too short! (or something else is wrong - try using quotes?)"
-      echo
-      showhelp
-        else
-      ignorestring="${OPTARG}"
+        echo "ignorestring too short! (or something else is wrong - try using quotes?)"
+        echo
+        showhelp
+      else
+        ignorestring="${OPTARG}"
       fi
       ;;
     l)
@@ -103,6 +109,18 @@ while getopts ${optstring} arg; do
       echo "Cache cleared."
       echo "New cache is being generated."
       echo "Do not interrupt!"
+      echo
+      ;;
+    o)
+      outputfile="{OPTARG}"
+      touch ${outputfile}
+      if [ -f ${outputfile} ]; then
+        export=1
+        echo "Export enabled, writing list of files to ${OPTARG}"
+        echo
+      else
+	echo "Error! Could not create output file!"
+      fi
       ;;
     ?) 
       echo "Invalid command: -${OPTARG}."
@@ -218,6 +236,16 @@ grep -rHlP "^Host: $chosenhost" ${logpath} | \
 
 cat ${tmpfile}
 echo -e "\n"
+
+if [ $export -eq 1 ]; then
+  cat ${tmpfile} > ${outputfile}
+  echo
+  echo "-o has been given:"
+  echo "This list is saved to ${outputfile}"
+fi
+
+echo -e "\n"
+
 cat ${tmpfile} | xargs -I{} grep -A1 '\-B\-\-' {} | grep -vE '^-' | sort | uniq
 echo -e "\n"
 if [ ${realip} -gt 0 ]; then
@@ -231,6 +259,7 @@ echo -e "\n"
 cat ${tmpfile} | xargs -I{} grep -oE "^Message.*$chosenmessage.*" {} | grep -oE "id\ \"[0-9]{6}\"" | sort | uniq
 echo -e "\n"
 cat ${tmpfile} | xargs -I{} grep -oE "^Message.*$chosenmessage.*" {} | sed -re 's/\[file.*$/\n\n/g' | sort | uniq | sed 's/$/\n/'
+
 
 #clean up
 rm ${tmpfile}
