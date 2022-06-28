@@ -61,6 +61,12 @@ showhelp() {
   echo "Default: no export, moi is trying to clean up properly"
   echo "Example: ./$(basename $0) -o \"/tmp/exportfile\""
   echo
+# -s
+  echo -e "\e[31m-s\e[0m"
+  echo "Show individual scores of different paranoia levels if possible (useful if executing paranoia level is set higher than paranoia level)"
+  echo "Default: off"
+  echo 
+# footnote
   echo "Everything can be combined like this:"
   echo 'moi -l . -p2 -r -i "192.168.1.1|iamapentestingsoftware"'
 
@@ -68,7 +74,7 @@ exit 1
 }
 
 #define list of argumentes given on the command line
-optstring=":hrp:i:l:o:"
+optstring=":hrp:i:l:o:s"
 
 while getopts ${optstring} arg; do
   case ${arg} in
@@ -123,6 +129,9 @@ while getopts ${optstring} arg; do
 	echo "Error! Could not create output file!"
       fi
       ;;
+    s)
+      showscores=1
+      echo "-s has been given. Individual scores will be shown, if present in the logfiles - needs custom rules 5002001/5002002"
     ?) 
       echo "Invalid command: -${OPTARG}."
       echo 
@@ -235,7 +244,12 @@ grep -rHlP "^Host: $chosenhost" ${logpath} | \
 	xargs -I{} grep -rHlP "${searchstring}" {} | \
 	xargs -I{} grep -rlE "^Message.*$chosenmessage" {} > ${tmpfile}
 
-cat ${tmpfile}
+if [ $showscores -eq 0]; then
+  cat ${tmpfile}
+else
+  cat ${tmpfile} | xargs -I{} bash -c "echo {}; grep -Po "scores.*paralevel4:[0-9]*" {} | head -n1"
+fi
+
 echo -e "\n"
 
 if [ $export -eq 1 ]; then
