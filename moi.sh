@@ -242,11 +242,13 @@ if [ $export -eq 1 ]; then
   cat ${tmpfile} > ${outputfile}
   echo
   echo "-o has been given:"
-  echo "This list is saved to ${outputfile}"
+  echo "This list is saved to ${outputfile} to further investigate it with different tools."
   echo "Maybe like this..."
   echo "cat ${outputfile} | xargs -I{} grep \"^User-Agent\" {}"
   echo "or"
   echo "cat ${outputfile} | xargs -I{} grep \"^Origin\" {}"
+  echo "or"
+  echo 'cat /tmp/bla | xargs -I{} bash -c "echo {}; grep -Po 'scores.*paralevel4:\d[0-9]*' {} | sort | uniq"'
 fi
 
 echo -e "\n"
