@@ -132,6 +132,7 @@ while getopts ${optstring} arg; do
     s)
       showscores=1
       echo "-s has been given. Individual scores will be shown, if present in the logfiles - needs custom rules 5002001/5002002"
+      ;;
     ?) 
       echo "Invalid command: -${OPTARG}."
       echo 
