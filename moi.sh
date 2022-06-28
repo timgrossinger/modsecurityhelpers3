@@ -245,7 +245,7 @@ grep -rHlP "^Host: $chosenhost" ${logpath} | \
 	xargs -I{} grep -rHlP "${searchstring}" {} | \
 	xargs -I{} grep -rlE "^Message.*$chosenmessage" {} > ${tmpfile}
 
-if [ $showscores -eq 0]; then
+if [ $showscores -eq 0 ]; then
   cat ${tmpfile}
 else
   cat ${tmpfile} | xargs -I{} bash -c "echo {}; grep -Po "scores.*paralevel4:[0-9]*" {} | head -n1"
