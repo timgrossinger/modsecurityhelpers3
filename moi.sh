@@ -88,7 +88,7 @@ while getopts ${optstring} arg; do
       if [[ ${OPTARG} =~ ^[1-4]$ ]]; then
         searchstring="^Message.*paranoia-level/${OPTARG}"
       else 
-	echo -e "$TIMESTAMP ERROR! Possible values: 1,2,3,4"
+	echo -e "$TIMESTAMP ERROR! -p: possible values are 1,2,3,4"
 	echo
         showhelp
       fi
