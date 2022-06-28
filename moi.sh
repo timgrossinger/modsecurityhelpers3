@@ -113,7 +113,7 @@ while getopts ${optstring} arg; do
       echo
       ;;
     o)
-      outputfile="{OPTARG}"
+      outputfile="${OPTARG}"
       touch ${outputfile}
       if [ -f ${outputfile} ]; then
         export=1
