@@ -106,7 +106,7 @@ or
 ./moi.sh -l .
 ```
 
-### (not really) FAQ ###
+### (potentially) FAQ ###
 - moi.sh quits unexpectedly
 
 if it quits unexpectedly it probably did not find logs of the chosen host where it (would have) intercepted 
