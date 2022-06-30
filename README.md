@@ -153,3 +153,4 @@ moi.sh comes with an integrated help document that can be called by doing someth
   - add the possibility to write the result to a textfile
   - bugfixes
   - further caching
+  - work with compressed files
