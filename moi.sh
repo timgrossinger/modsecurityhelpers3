@@ -13,7 +13,7 @@ TIMESTAMPRED="\e[31m$(date "+%a %W %H:%M:%S:")\e[0m"
 #set defaults
 
 #when searchstring matches, the log file is going to be parsed
-  searchstring="Total Score:\ \d+"
+  #searchstring="Total Score:\ \d+"
 
 #when ignorestring matches, the log file is going to be ignored 
   ignorestring="so-you-are-being-scanned"
