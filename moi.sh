@@ -1,294 +1,132 @@
 #!/bin/bash
 
-#uncomment to debug
-#set -x
-
-#activate pipefail
 set -o pipefail
 
-#set timestamp variable
 TIMESTAMPGREEN="\e[32m$(date "+%a %W %H:%M:%S:")\e[0m"
 TIMESTAMPRED="\e[31m$(date "+%a %W %H:%M:%S:")\e[0m"
 
-#set defaults
+ignorestring="so-you-are-being-scanned"
+logpath="/var/log/modsec_audit/www-data/$(date +%Y%m%d)"
+tmpfile="/tmp/moi.tmp"
+cachehosts="/tmp/moi.cache"
+showscores=0
+export=0
 
-#when searchstring matches, the log file is going to be parsed
-  #searchstring="Total Score:\ \d+"
+optstring=":hrp:i:l:o:s"
 
-#when ignorestring matches, the log file is going to be ignored 
-  ignorestring="so-you-are-being-scanned"
-
-#logpath defines the location from where moi.sh scans recursively
-  logpath="/var/log/modsec_audit/www-data/$(date +%Y%m%d)"
-
-#sets path of temporary files - don't touch, if unsure
-  tmpfile="/tmp/moi.tmp"
-  cachehosts="/tmp/moi.cache"
-
-#function showhelp
 showhelp() {
   echo "--- $(basename $0) help ---"
-  echo
-# -e
-  echo -e "\e[35m-h\e[0m"
-  echo "show this help"
-  echo
-# -l
-  echo -e "\e[35m-l PATH\e[0m"
-  echo "sets logpath and with that the timeframe" 
-  echo 'Default: /var/log/modsec_audit/www-data/$(date +%Y%m%d)'
-  echo "(Use today's logs)"
-  echo "Examples:"
-  echo "./$(basename $0) -l ."
-  echo "./$(basename $0) -l /var/log/modsec_audit/www-data/20220612"
-  echo
-# -r
-  echo -e "\e[35m-r\e[0m"
-  echo "clears cache"
-  echo
-# -p
-  echo -e "\e[35m-p n\e[0m"
-  echo "filter for paranoia level (useful if executing paranoia level is set higher than paranoia level)"
-  echo "n must be 1, 2, 3 or 4"
-  echo "Default: not set"
-  echo "Example: ./$(basename $0) -p 2"
-  echo
-# -i
-  echo -e "\e[35m-i\e[0m"
-  echo "set ignorestring: exclude log files that include the following string or one of the defined strings"
-  echo 'Default: "so-you-are-being-scanned"'
-  echo "Example: ./$(basename $0) -i \"128.2.1.2|pentesting-scanner-software|1.2.3.4\""
-  echo
-# -o
-  echo -e "\e[35m-o\e[0m"
-  echo "enable export function, so that you can work with the matching files"
-  echo "Default: no export, moi is trying to clean up properly"
-  echo "Example: ./$(basename $0) -o \"/tmp/exportfile\""
-  echo
-# -s
-  echo -e "\e[35m-s\e[0m"
-  echo "Show individual scores of different paranoia levels if possible (useful if executing paranoia level is set higher than paranoia level)"
-  echo "Default: off"
-  echo 
-# footnote
-  echo "Everything can be combined like this:"
-  echo 'moi -l . -p2 -r -i "192.168.1.1|iamapentestingsoftware"'
-
-exit 1
+  echo -e "\e[35m-h\e[0m show this help"
+  echo -e "\e[35m-l PATH\e[0m set logpath (default: today)"
+  echo -e "\e[35m-r\e[0m clear cache"
+  echo -e "\e[35m-p n\e[0m filter for paranoia level (1–4)"
+  echo -e "\e[35m-i STR\e[0m ignore logs matching string"
+  echo -e "\e[35m-o FILE\e[0m output matched files to FILE"
+  echo -e "\e[35m-s\e[0m show individual paranoia scores"
+  exit 1
 }
-
-#define list of argumentes given on the command line
-optstring=":hrp:i:l:o:s"
 
 while getopts ${optstring} arg; do
   case ${arg} in
-    h) 
-      showhelp 
-      ;;
+    h) showhelp ;;
     p)
-      if [[ ${OPTARG} =~ ^[1-4]$ ]]; then
-        searchstring="^Message.*paranoia-level/${OPTARG}"
-      else 
-	echo -e "$TIMESTAMPRED ERROR! -p: possible values are 1,2,3,4"
-	echo
+      [[ ${OPTARG} =~ ^[1-4]$ ]] && searchstring="paranoia-level/${OPTARG}" || {
+        echo -e "$TIMESTAMPRED ERROR! -p must be 1–4"
         showhelp
-      fi
+      }
       ;;
-    i) 
-      if [[ ${#OPTARG} -lt 5 ]]; then
-        echo -e "$TIMESTAMPRED ERROR! ignorestring too short! (or something else is wrong - try using quotes?)"
-        echo
-        showhelp
-      else
-        ignorestring="${OPTARG}"
-      fi
+    i)
+      [[ ${#OPTARG} -lt 5 ]] && { echo -e "$TIMESTAMPRED ERROR! Invalid -i"; showhelp; }
+      ignorestring="${OPTARG}"
       ;;
     l)
-      if ! [[ -d ${OPTARG} ]]; then
-        echo -e "$TIMESTAMPRED ERROR! Directory ${OPTARG} does not seem to exist."
-	echo
-	showhelp
-      else
-        logpath="${OPTARG}"
-      fi
+      [[ ! -d ${OPTARG} ]] && { echo -e "$TIMESTAMPRED ERROR! Dir not found: ${OPTARG}"; showhelp; }
+      logpath="${OPTARG}"
       ;;
-    r) 
+    r)
       echo -e "$TIMESTAMPGREEN Clearing cache..."
-      echo -e "$TIMESTAMPGREEN Deleting ${cachehosts} 0%"
-      rm ${cachehosts}
-      echo -e "$TIMESTAMPGREEN Deleting ${cachehosts} 100%"
-      echo -e "$TIMESTAMPGREEN Cache cleared."
-      echo -e "$TIMESTAMPGREEN New cache is being generated."
-      echo -e "$TIMESTAMPGREEN Do not interrupt!"
-      echo
+      rm -f "${cachehosts}"
       ;;
     o)
       outputfile="${OPTARG}"
-      touch ${outputfile}
-      if [ -f ${outputfile} ]; then
-        export=1
-        echo -e "$TIMESTAMPGREEN Export enabled, writing list of files to ${OPTARG}"
-        echo
-      else
-	echo
-	echo -e "$TIMESTAMPRED ERROR! Could not create output file!"
-	showhelp
-      fi
+      touch "${outputfile}" || { echo -e "$TIMESTAMPRED Cannot create ${outputfile}"; showhelp; }
+      export=1
+      echo -e "$TIMESTAMPGREEN Exporting results to ${outputfile}"
       ;;
     s)
       showscores=1
-      echo -e "$TIMESTAMPGREEN -s has been given. Individual scores will be shown, if present in the logfiles - needs custom rules 5002001/5002002"
       ;;
-    ?) 
-      echo -e "$TIMESTAMPRED ERROR! Invalid command: -${OPTARG}."
-      echo 
-      showhelp
-      ;;
+    ?) echo -e "$TIMESTAMPRED Unknown option: -${OPTARG}"; showhelp ;;
   esac
 done
 
+which dialog > /dev/null || { echo -e "$TIMESTAMPRED Please install 'dialog'"; exit 1; }
 
-#test: is dialog installed?
-if ! which dialog > /dev/null; then
-	echo -e "$TIMESTAMPRED ERROR!"
-	echo dialog not found
-	echo Please install dialog with \"sudo apt install dialog\"
-        echo
-	showhelp
+if [ ! -s "${cachehosts}" ]; then
+  grep -rHlP "${searchstring}" "${logpath}" 2>/dev/null | \
+    xargs -r grep -HLE "${ignorestring}" | \
+    xargs -r grep -hE '^Host' | grep -vE '[0-9]' | \
+    sed 's/.* //' | sort -u > "${cachehosts}"
 fi
 
-if which figlet > /dev/null; then
-figlet -f script moi
-echo -e "\n...is loading. Please wait!"
-else
-echo " x"
-echo " x        xx             xxxx xxx"
-echo " x      xx  xx         xx        x"
-echo " x    xx     xx       x           x"
-echo "  x   x        x     x            x"
-echo "  x  x         x    x              x"
-echo "  x x          x    x              x                 "
-echo "  x x           x  x               x                x"
-echo "  x x            x x               x                 "
-echo "   xx            x x               x"
-echo "   xx             x               xx"
-echo "   xx            xx               x"
-echo "   xx            xx              x         xxxx     x"
-echo "    x            xx             x      xxxxx   x    x"
-echo "    x            x            xx     xxxx      x    x"
-echo "    x            x            x      xx        x    x"
-echo "    x            x           xx     x          x    x"
-echo "    x                        x      xx        x     x"
-echo "    x                        xx      xx     xx      xx    x"
-echo "    x                          xx     xxxxxx         xxxxx"
-echo "    x"
-echo "          moi is loading. Please wait!"
-fi
-
-#create cachehosts tempfile with the hosts (can save lots of time)
-if [ ! -s ${cachehosts} ]; then
-  grep -rHlP "${searchstring}" ${logpath} | \
-	  xargs -I{} grep -HLE "${ignorestring}" {} | \
-	  xargs -I{} grep -hE '^Host' {} | \
-	  grep -vE [0-9] | sort | uniq | \
-	  sed 's/.*\ //' > ${cachehosts}
-fi
-
-#Reads host entries from Request Header from the logs
-hosts=$(cat ${cachehosts})
-
-#Check if X-Real-IP Header is present (specific Webserver/Reverse Proxy configuration)
-let realip=$(find ${logpath} -type f | \
-	head -n100 | \
-	xargs -I{} grep -E '^X-Real-IP' {} | \
-	wc -l 2>/dev/null)
-
-#Adds numbers for usage with the tool dialog and removes newlines
+hosts=$(cat "${cachehosts}")
 hostsn=$(echo "${hosts}" | nl -w1 | tr '\n' ' ')
-
-#Runs the tool dialog - choose host header to grep for (or IP address)
 chosenhostn=$(dialog --backtitle 'moi - a modsecurityhelpers tool' --menu --stdout 'Choose the host to filter for' 0 0 0 ${hostsn} 999 "IP address" 2>/dev/null)
 
-#set variable chosenhost to regex of IP address when IP address has been chosen
-if [ $chosenhostn = '999' ]; then
-	chosenhost='\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'
-else
-	chosenhost=$(echo "${hosts}" | sed -n ${chosenhostn}p)
-fi
+[[ "${chosenhostn}" == "999" ]] && chosenhost='\d{1,3}(\.\d{1,3}){3}' || chosenhost=$(echo "${hosts}" | sed -n ${chosenhostn}p)
 
-#Reads messages & number of occurence
-messages=`grep -rHlP "^Host: $chosenhost" ${logpath} | \
-	xargs -I{} grep -HLE "${ignorestring}" {} | \
-	xargs -I{} grep -rHlP "${searchstring}" {} | \
-	xargs -I{} grep -hP '^Message.*\[msg.+?\]' {} | \
-	grep -hPo '\[msg.+?\]' | sort | uniq -c | \
-	sed 's/^ *//' | sed -e 's/(/./g' | sed -e 's/)/./g' | sort -rh | \
-	grep -vE '(In|Out)bound\ Anomaly' | \
-	sed -re 's/\b([0-9]+)\b.*\[msg\ \"(.*)\"\]$/\"\1 \2\"/'`
+messages=$(grep -rHlP "^Host: ${chosenhost}" "${logpath}" 2>/dev/null | \
+  xargs -r grep -HLE "${ignorestring}" | \
+  xargs -r grep -rHlP "${searchstring}" | \
+  xargs -r grep -hPo '\[msg\s+"[^"]+"\]' | \
+  sed -e 's/\[msg "//' -e 's/"\]//' | sort | uniq -c | sort -rh | \
+  sed 's/^ *//' | sed -r 's/^([0-9]+)\s+(.*)$/\1 \2/' | sed 's/$/"/' | sed 's/^/"/')
 
-#Adds numbers for usage with the tool dialog and removes newlines/tabs
 messagesn=$(echo "${messages}" | nl -w1 | tr '\n' ' ' | tr '\t' ' ')
-
-#Runs the tool dialog - choose message
 chosenmessagen=$(bash -c "dialog --backtitle 'moi - a modsecurityhelpers tool' --menu --stdout \"Choose the message to filter for\" 0 0 0 ${messagesn[@]} 2>/dev/null")
-chosenmessage=$(echo "${messages}" | sed -n ${chosenmessagen}p | sed -re "s/\b([0-9]+)\b\s*(.*)/\2/")
+chosenmessage=$(echo "${messages}" | sed -n "${chosenmessagen}p" | sed -r 's/^"([0-9]+)\s+//' | sed 's/"$//')
 
-if [[ -z "$chosenmessage" ]]; then
-	echo -e "Nothing found! Sorry!"
-	exit 1
-fi
+[[ -z "${chosenmessage}" ]] && { echo "Nothing found!"; exit 1; }
 
-#clear screen and show results
 clear
-if [ $chosenhostn = '999' ]; then
-        echo -e "Host: IP address\nMessage:\e[31m $chosenmessage\e[0m \n\n"
+echo -e "Host: ${chosenhost}\nMessage:\e[31m ${chosenmessage} \e[0m\n"
+
+grep -rHlP "^Host: ${chosenhost}" "${logpath}" | \
+  xargs -r grep -HLE "${ignorestring}" | \
+  xargs -r grep -rHlP "${searchstring}" | \
+  xargs -r grep -lP "${chosenmessage}" > "${tmpfile}"
+
+if [[ "${showscores}" -eq 0 ]]; then
+  cat "${tmpfile}"
 else
-        echo -e "Host: ${chosenhost}\nMessage:\e[31m $chosenmessage\e[0m \n\n"
+  cat "${tmpfile}" | xargs -I{} bash -c "echo {}; grep -Po 'scores.*paralevel4:[0-9]*' {} | head -n1"
 fi
 
-grep -rHlP "^Host: $chosenhost" ${logpath} | \
-	xargs -I{} grep -HLE "${ignorestring}" {} | \
-	xargs -I{} grep -rHlP "${searchstring}" {} | \
-	xargs -I{} grep -rlE "^Message.*$chosenmessage" {} > ${tmpfile}
+echo -e "\n"
 
-if [[ $showscores -eq 0 ]]; then
-  cat ${tmpfile}
+[[ "${export}" -eq 1 ]] && {
+  cat "${tmpfile}" > "${outputfile}"
+  echo -e "-o was set. Results exported to: ${outputfile}\n"
+}
+
+cat "${tmpfile}" | xargs -I{} grep -A1 '\-B\-\-' {} | grep -vE '^-' | sort | uniq
+echo -e "\n"
+
+# IP display
+realip=$(find "${logpath}" -type f | head -n100 | xargs -r grep -cE '^X-Real-IP')
+if [[ ${realip} -gt 0 ]]; then
+  cat "${tmpfile}" | xargs -I{} grep -E '^X-Real-IP' {} | awk '{print $2}' | sort | uniq | \
+    xargs -I{} bash -c 'echo -e "\e[31mIP address:\e[0m\n{}\n\e[31mPTR-Record:\e[0m" ; host {} ; echo ""'
 else
-  cat ${tmpfile} | xargs -I{} bash -c "echo {}; grep -Po "scores.*paralevel4:[0-9]*" {} | head -n1"
+  cat "${tmpfile}" | xargs -I{} grep -A1 '\-A\-\-' {} | awk '{print $4}' | sort | uniq | \
+    xargs -I{} bash -c 'echo -e "\e[31mIP address\e[0m:\n{}\n\e[31mPTR-Record:\e[0m" ; host {} ; echo ""'
 fi
 
-echo -e "\n"
+echo -e "\nRule IDs and Phases:\n"
+cat "${tmpfile}" | xargs -I{} grep -Po '\[id "\d+"\]|\(phase \d\)' {} | sort | uniq
 
-if [[ $export -eq 1 ]]; then
-  cat ${tmpfile} > ${outputfile}
-  echo
-  echo "-o has been given:"
-  echo "This list is saved to ${outputfile} to further investigate it with different tools."
-  echo "Maybe like this..."
-  echo "cat ${outputfile} | xargs -I{} grep \"^User-Agent\" {}"
-  echo "or"
-  echo "cat ${outputfile} | xargs -I{} grep \"^Origin\" {}"
-  echo "or"
-  echo "cat ${outputfile}  | xargs -I{} bash -c \"echo {}; grep -Po \"scores.*paralevel4:[0-9]*\" {} | head -n1\""
-fi
+echo -e "\nFull Rule Messages:\n"
+cat "${tmpfile}" | xargs -I{} awk '/--H--/,/--[A-Z]--/ {print}' | grep -v "^--" | sort | uniq
 
-echo -e "\n"
-
-cat ${tmpfile} | xargs -I{} grep -A1 '\-B\-\-' {} | grep -vE '^-' | sort | uniq
-echo -e "\n"
-if [ ${realip} -gt 0 ]; then
-	cat ${tmpfile} | xargs -I{} grep -E '^X-Real-IP' {} | awk '{print $2}' | sort | uniq | \
-		xargs -I{} bash -c 'echo -e "\e[31mIP address:\e[0m\n{}\n\e[31mPTR-Record:\e[0m" ; host {} ; echo -e ""'
-else
-        cat ${tmpfile} | xargs -I{} grep -A1 '\-A\-\-' {} | awk '{print $4}' | sort | uniq | \
-		xargs -I{} bash -c 'echo -e "\e[31mIP address\e[0m:\n{}\n\e[31mPTR-Record:\e[0m" ; host {} ; echo -e ""'
-fi
-echo -e "\n"
-cat ${tmpfile} | xargs -I{} grep -oE "^Message.*$chosenmessage.*" {} | grep -oE "id\ \"[0-9]{6}\"" | sort | uniq
-echo -e "\n"
-cat ${tmpfile} | xargs -I{} grep -oE "^Message.*$chosenmessage.*" {} | sed -re 's/\[file.*$/\n\n/g' | sort | uniq | sed 's/$/\n/'
-
-
-#clean up
-rm ${tmpfile}
+rm "${tmpfile}"
 exit 0
